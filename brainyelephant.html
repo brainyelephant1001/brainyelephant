@@ -1,0 +1,2183 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<meta name="description" content="Brainy Elephant - independent British technology business offering computer services, upgrades, data transfers, technology reuse and a simple way to sell unwanted tech.">
+
+<title>Brainy Elephant | Smart Tech. Smarter Prices.</title>
+
+<style>
+
+/* ================================
+   BASIC SETTINGS
+================================ */
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    color: #172033;
+    background: white;
+}
+
+a {
+    color: inherit;
+}
+
+section {
+    padding: 70px 5%;
+}
+
+.section-title {
+    text-align: center;
+    color: #012169;
+    font-size: 36px;
+    margin: 0 0 12px;
+}
+
+.section-intro {
+    text-align: center;
+    color: #606775;
+    max-width: 800px;
+    margin: 0 auto 40px;
+    line-height: 1.7;
+    font-size: 17px;
+}
+
+
+/* ================================
+   BUTTONS
+================================ */
+
+.button {
+    display: inline-block;
+    background: #c8102e;
+    color: white;
+    text-decoration: none;
+    padding: 14px 25px;
+    margin: 8px 4px;
+    border-radius: 5px;
+    border: none;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 15px;
+}
+
+.button:hover {
+    background: #a80d27;
+}
+
+.button-blue {
+    background: #012169;
+}
+
+.button-blue:hover {
+    background: #07194a;
+}
+
+.whatsapp-button {
+    background: #198754;
+}
+
+.whatsapp-button:hover {
+    background: #146c43;
+}
+
+
+/* ================================
+   TOP STRIP
+================================ */
+
+.top-strip {
+    background: #c8102e;
+    color: white;
+    text-align: center;
+    padding: 9px 15px;
+    font-size: 14px;
+}
+
+
+/* ================================
+   HEADER
+================================ */
+
+header {
+    background: #012169;
+    color: white;
+    padding: 20px 5%;
+}
+
+.header-inner {
+    max-width: 1200px;
+    margin: auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 25px;
+}
+
+.brand {
+    display: flex;
+    flex-direction: column;
+}
+
+.logo {
+    font-size: 30px;
+    font-weight: 800;
+    letter-spacing: 1px;
+}
+
+.logo-tagline {
+    font-size: 13px;
+    margin-top: 4px;
+    color: #d9e1f2;
+}
+
+.header-contact {
+    text-align: right;
+}
+
+.header-contact span {
+    display: block;
+    font-size: 13px;
+    color: #d9e1f2;
+    margin-bottom: 4px;
+}
+
+.header-contact a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 17px;
+}
+
+
+/* ================================
+   NAVIGATION
+================================ */
+
+nav {
+    background: #07194a;
+    text-align: center;
+    padding: 14px 10px;
+    position: sticky;
+    top: 0;
+    z-index: 500;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+}
+
+nav a {
+    color: white;
+    text-decoration: none;
+    margin: 0 14px;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+nav a:hover {
+    color: #ffb6c2;
+}
+
+
+/* ================================
+   HERO
+================================ */
+
+.hero {
+    background:
+        linear-gradient(
+            135deg,
+            #f5f7fa 0%,
+            #e8edf5 100%
+        );
+
+    text-align: center;
+    padding: 95px 20px;
+}
+
+.hero-badge {
+    display: inline-block;
+    background: #012169;
+    color: white;
+    padding: 7px 13px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: bold;
+    margin-bottom: 18px;
+}
+
+.hero h1 {
+    color: #012169;
+    font-size: 60px;
+    margin: 0;
+}
+
+.hero h2 {
+    font-size: 27px;
+    margin: 15px 0;
+    color: #172033;
+}
+
+.hero p {
+    max-width: 760px;
+    margin: 18px auto;
+    color: #555e6d;
+    font-size: 18px;
+    line-height: 1.7;
+}
+
+
+/* ================================
+   INTRO TRUST BAR
+================================ */
+
+.quick-trust {
+    background: white;
+    border-bottom: 1px solid #ddd;
+    padding: 28px 5%;
+}
+
+.quick-trust-grid {
+    max-width: 1100px;
+    margin: auto;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 25px;
+    text-align: center;
+}
+
+.quick-trust strong {
+    display: block;
+    color: #012169;
+    margin-bottom: 5px;
+}
+
+.quick-trust span {
+    font-size: 14px;
+    color: #666;
+}
+
+
+/* ================================
+   SERVICES
+================================ */
+
+.services-section {
+    background: white;
+}
+
+.services-grid {
+    max-width: 1150px;
+    margin: auto;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 22px;
+}
+
+.service {
+    border: 1px solid #ddd;
+    border-top: 5px solid #c8102e;
+    padding: 30px 22px;
+    border-radius: 8px;
+    background: white;
+}
+
+.service h3 {
+    color: #012169;
+    font-size: 21px;
+    margin-top: 0;
+}
+
+.service p {
+    line-height: 1.6;
+    color: #555e6d;
+}
+
+
+/* ================================
+   COMPUTER CARE
+================================ */
+
+.computer-care {
+    background: #f3f5f8;
+}
+
+.care-box {
+    max-width: 1050px;
+    margin: auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 45px;
+    align-items: center;
+}
+
+.care-text h2 {
+    color: #012169;
+    font-size: 38px;
+}
+
+.care-text p {
+    line-height: 1.75;
+    color: #555e6d;
+}
+
+.dust-box {
+    background: #012169;
+    color: white;
+    padding: 40px;
+    border-radius: 9px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+}
+
+.dust-box h3 {
+    font-size: 25px;
+    margin-top: 0;
+}
+
+.dust-box ul {
+    line-height: 2;
+    padding-left: 20px;
+}
+
+
+/* ================================
+   SELL INTRO
+================================ */
+
+.sell-tech {
+    background: #012169;
+    color: white;
+    text-align: center;
+}
+
+.sell-tech h2 {
+    font-size: 39px;
+    margin-top: 0;
+}
+
+.sell-tech p {
+    max-width: 800px;
+    margin: 15px auto;
+    line-height: 1.75;
+}
+
+
+/* ================================
+   FORMS
+================================ */
+
+.sell-form-section {
+    background: #f3f5f8;
+}
+
+.sell-form,
+.quote-form {
+    max-width: 850px;
+    margin: auto;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 38px;
+    box-shadow: 0 5px 18px rgba(0,0,0,0.05);
+}
+
+.sell-form h3,
+.quote-form h3 {
+    color: #012169;
+}
+
+.sell-information {
+    background: #eef2f8;
+    border-left: 5px solid #012169;
+    padding: 18px;
+    margin-bottom: 25px;
+    line-height: 1.6;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.form-group {
+    text-align: left;
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    color: #012169;
+    font-weight: bold;
+    margin-bottom: 7px;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 13px;
+    border: 1px solid #bbb;
+    border-radius: 5px;
+    background: white;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 15px;
+}
+
+.form-group textarea {
+    height: 120px;
+    resize: vertical;
+}
+
+.form-note {
+    font-size: 13px;
+    color: #666;
+    line-height: 1.5;
+}
+
+.photo-information {
+    background: #e8f5ec;
+    border-left: 5px solid #198754;
+    padding: 22px;
+    margin-top: 25px;
+    line-height: 1.6;
+}
+
+.photo-information h3 {
+    margin-top: 0;
+    color: #146c43;
+}
+
+
+/* ================================
+   SERVICE ENQUIRY
+================================ */
+
+.quote-section {
+    background: white;
+}
+
+
+/* ================================
+   SHOP COMING SOON
+================================ */
+
+.shop-coming {
+    background: #f3f5f8;
+    text-align: center;
+}
+
+.shop-box {
+    max-width: 900px;
+    margin: auto;
+    background: white;
+    border-radius: 12px;
+    border: 1px solid #ddd;
+    padding: 55px 40px;
+    box-shadow: 0 7px 25px rgba(0,0,0,0.06);
+}
+
+.shop-icon {
+    width: 85px;
+    height: 85px;
+    margin: 0 auto 22px;
+    border-radius: 50%;
+    background: #012169;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 40px;
+    font-weight: bold;
+}
+
+.shop-box h2 {
+    color: #012169;
+    font-size: 36px;
+    margin-bottom: 15px;
+}
+
+.shop-box p {
+    max-width: 680px;
+    margin: 15px auto;
+    line-height: 1.7;
+    color: #555e6d;
+}
+
+.shop-categories-preview {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 30px 0;
+}
+
+.shop-categories-preview span {
+    border: 1px solid #c8ced8;
+    background: #f6f7f9;
+    padding: 10px 16px;
+    border-radius: 20px;
+    color: #012169;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+
+/* ================================
+   REUSE
+================================ */
+
+.reuse {
+    text-align: center;
+    background: white;
+}
+
+.reuse-content {
+    max-width: 850px;
+    margin: auto;
+    line-height: 1.75;
+}
+
+.reuse-note {
+    background: #f3f5f8;
+    border-left: 5px solid #c8102e;
+    max-width: 750px;
+    margin: 30px auto;
+    padding: 22px;
+    text-align: left;
+}
+
+
+/* ================================
+   TRUST
+================================ */
+
+.trust {
+    background: #012169;
+    color: white;
+}
+
+.trust-grid {
+    max-width: 1100px;
+    margin: auto;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 30px;
+    text-align: center;
+}
+
+.trust-grid h3 {
+    margin-bottom: 8px;
+}
+
+.trust-grid p {
+    color: #d9e1f2;
+    line-height: 1.5;
+}
+
+
+/* ================================
+   ABOUT
+================================ */
+
+.about-section {
+    background: white;
+}
+
+.about {
+    max-width: 850px;
+    margin: auto;
+    text-align: center;
+    line-height: 1.8;
+}
+
+.about strong {
+    color: #012169;
+    font-size: 20px;
+}
+
+
+/* ================================
+   CONTACT
+================================ */
+
+.contact {
+    background: #f3f5f8;
+    text-align: center;
+}
+
+.contact-box {
+    max-width: 700px;
+    margin: 30px auto 0;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 35px;
+    box-shadow: 0 5px 18px rgba(0,0,0,0.05);
+}
+
+.contact-box h3 {
+    color: #012169;
+    font-size: 25px;
+}
+
+.phone-number {
+    font-size: 24px;
+    font-weight: bold;
+    color: #012169;
+    margin: 10px 0;
+}
+
+
+/* ================================
+   FOOTER
+================================ */
+
+footer {
+    background: #07194a;
+    color: white;
+    text-align: center;
+    padding: 48px 20px;
+}
+
+footer strong {
+    font-size: 24px;
+}
+
+footer p {
+    color: #d6dbea;
+    line-height: 1.6;
+}
+
+.footer-links {
+    margin: 20px 0;
+}
+
+.footer-links a {
+    color: white;
+    margin: 5px 10px;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.footer-links a:hover {
+    text-decoration: underline;
+}
+
+
+/* ================================
+   MOBILE
+================================ */
+
+@media (max-width: 900px) {
+
+    .header-inner {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .header-contact {
+        text-align: center;
+    }
+
+    .quick-trust-grid,
+    .services-grid,
+    .trust-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .care-box {
+        grid-template-columns: 1fr;
+    }
+
+    nav {
+        position: static;
+    }
+
+    nav a {
+        display: inline-block;
+        margin: 8px;
+    }
+
+}
+
+@media (max-width: 600px) {
+
+    section {
+        padding: 55px 20px;
+    }
+
+    .hero {
+        padding: 70px 20px;
+    }
+
+    .hero h1 {
+        font-size: 43px;
+    }
+
+    .hero h2 {
+        font-size: 22px;
+    }
+
+    .section-title {
+        font-size: 30px;
+    }
+
+    .quick-trust-grid,
+    .services-grid,
+    .trust-grid,
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+
+    .sell-form,
+    .quote-form {
+        padding: 24px;
+    }
+
+    .shop-box {
+        padding: 40px 22px;
+    }
+
+    .logo {
+        font-size: 27px;
+    }
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<!-- ================================
+     TOP
+================================ -->
+
+<div class="top-strip">
+
+Independent British technology business • Smart tech. Smarter prices.
+
+</div>
+
+
+<header>
+
+<div class="header-inner">
+
+<div class="brand">
+
+<div class="logo">
+BRAINY ELEPHANT
+</div>
+
+<div class="logo-tagline">
+Technology • Repairs • Upgrades • Reuse
+</div>
+
+</div>
+
+
+<div class="header-contact">
+
+<span>
+WhatsApp Brainy Elephant
+</span>
+
+<a href="https://wa.me/447784372570?text=Hi%20Brainy%20Elephant%2C%20I%27d%20like%20to%20make%20an%20enquiry."
+target="_blank"
+rel="noopener noreferrer">
+
+07784 372570
+
+</a>
+
+</div>
+
+</div>
+
+</header>
+
+
+<!-- ================================
+     NAVIGATION
+================================ -->
+
+<nav>
+
+<a href="#home">
+Home
+</a>
+
+<a href="#services">
+Services
+</a>
+
+<a href="#sell">
+Sell Your Tech
+</a>
+
+<a href="#shop">
+Shop
+</a>
+
+<a href="#reuse">
+Reuse
+</a>
+
+<a href="#about">
+About
+</a>
+
+<a href="#contact">
+Contact
+</a>
+
+</nav>
+
+
+<!-- ================================
+     HERO
+================================ -->
+
+<section class="hero" id="home">
+
+<div class="hero-badge">
+INDEPENDENT UK TECHNOLOGY BUSINESS
+</div>
+
+<h1>
+Brainy Elephant
+</h1>
+
+<h2>
+Smart tech. Smarter prices.
+</h2>
+
+<p>
+
+Technology doesn't always need replacing.
+
+Brainy Elephant helps people maintain, upgrade and get more life from their technology,
+while providing a simple way to offer unwanted devices for resale, refurbishment,
+repair, parts or responsible reuse.
+
+</p>
+
+<a href="#services" class="button button-blue">
+Computer Services
+</a>
+
+<a href="#sell" class="button">
+Sell Your Tech
+</a>
+
+<a
+href="https://wa.me/447784372570?text=Hi%20Brainy%20Elephant%2C%20I%27d%20like%20to%20make%20an%20enquiry."
+target="_blank"
+rel="noopener noreferrer"
+class="button whatsapp-button">
+
+WhatsApp Us
+
+</a>
+
+</section>
+
+
+<!-- ================================
+     QUICK TRUST
+================================ -->
+
+<div class="quick-trust">
+
+<div class="quick-trust-grid">
+
+<div>
+
+<strong>
+UK Based
+</strong>
+
+<span>
+Independent technology business
+</span>
+
+</div>
+
+
+<div>
+
+<strong>
+Repair & Upgrade
+</strong>
+
+<span>
+Get more life from existing equipment
+</span>
+
+</div>
+
+
+<div>
+
+<strong>
+Sell Your Tech
+</strong>
+
+<span>
+Offer us unwanted technology
+</span>
+
+</div>
+
+
+<div>
+
+<strong>
+Reuse
+</strong>
+
+<span>
+Giving useful equipment another life
+</span>
+
+</div>
+
+</div>
+
+</div>
+
+
+<!-- ================================
+     SERVICES
+================================ -->
+
+<section class="services-section" id="services">
+
+<h2 class="section-title">
+Computer Services
+</h2>
+
+<p class="section-intro">
+
+Practical computer services designed to help maintain,
+improve and extend the useful life of your equipment.
+
+</p>
+
+
+<div class="services-grid">
+
+
+<div class="service">
+
+<h3>
+Computer Cleaning
+</h3>
+
+<p>
+
+Internal dust removal and cleaning for desktop computers
+and suitable laptops.
+
+</p>
+
+</div>
+
+
+<div class="service">
+
+<h3>
+RAM & Storage Upgrades
+</h3>
+
+<p>
+
+RAM, SSD and storage upgrades can improve performance,
+capacity and the useful life of suitable computers.
+
+</p>
+
+</div>
+
+
+<div class="service">
+
+<h3>
+Data Transfers
+</h3>
+
+<p>
+
+Moving accessible personal files from an old computer
+or drive to a replacement computer or storage device.
+
+</p>
+
+</div>
+
+
+<div class="service">
+
+<h3>
+Computer Setup
+</h3>
+
+<p>
+
+Help setting up a new desktop or laptop,
+installing updates and getting the computer ready to use.
+
+</p>
+
+</div>
+
+
+</div>
+
+</section>
+
+
+<!-- ================================
+     COMPUTER CARE
+================================ -->
+
+<section class="computer-care">
+
+<div class="care-box">
+
+
+<div class="care-text">
+
+<h2>
+What's Inside Your Computer?
+</h2>
+
+<p>
+
+Computers gradually collect dust inside their cases,
+fans and cooling systems.
+
+</p>
+
+<p>
+
+Heavy dust build-up can restrict airflow,
+increase fan noise and make it harder for the cooling system
+to keep components at suitable operating temperatures.
+
+</p>
+
+<p>
+
+Maintenance can help keep equipment clean
+and may identify issues before they become bigger problems.
+
+</p>
+
+<a href="#service-enquiry" class="button">
+Ask About Computer Maintenance
+</a>
+
+</div>
+
+
+<div class="dust-box">
+
+<h3>
+Brainy Elephant Computer Care
+</h3>
+
+<ul>
+
+<li>Internal dust cleaning</li>
+
+<li>Fan and airflow inspection</li>
+
+<li>Desktop computer maintenance</li>
+
+<li>Laptop maintenance where suitable</li>
+
+<li>RAM upgrades</li>
+
+<li>SSD and storage upgrades</li>
+
+<li>Accessible-data transfers</li>
+
+<li>New computer setup</li>
+
+</ul>
+
+</div>
+
+
+</div>
+
+</section>
+
+
+<!-- ================================
+     SELL YOUR TECH INTRO
+================================ -->
+
+<section class="sell-tech" id="sell">
+
+<h2>
+Sell Your Tech to Brainy Elephant
+</h2>
+
+<p>
+
+Got an old phone, tablet, laptop, desktop computer
+or other technology sitting around?
+
+It may still have value.
+
+</p>
+
+<p>
+
+Tell us what you've got, its condition and what you'd like for it.
+We can consider selected working, faulty, damaged and older equipment
+for refurbishment, repair, parts or reuse.
+
+</p>
+
+<a href="#sell-form" class="button">
+Get an Initial Assessment
+</a>
+
+</section>
+
+
+<!-- ================================
+     SELL FORM
+================================ -->
+
+<section class="sell-form-section" id="sell-form">
+
+<h2 class="section-title">
+Tell Us What You've Got
+</h2>
+
+<p class="section-intro">
+
+Give us as much information as you can.
+You don't need to know every technical detail.
+
+</p>
+
+
+<form
+class="sell-form"
+action="https://formspree.io/f/mrpeeknz"
+method="POST">
+
+
+<h3>
+Your Device
+</h3>
+
+
+<div class="sell-information">
+
+<strong>
+How it works:
+</strong>
+
+Tell us about your device and what you'd like for it.
+After reviewing the information, Brainy Elephant may contact you
+for more details or photographs before making an offer.
+
+</div>
+
+
+<div class="form-row">
+
+
+<div class="form-group">
+
+<label for="sellDevice">
+Device type
+</label>
+
+<select
+id="sellDevice"
+name="Device Type"
+required>
+
+<option value="">
+Please select
+</option>
+
+<option>Laptop</option>
+
+<option>Desktop computer</option>
+
+<option>iPhone</option>
+
+<option>Android phone</option>
+
+<option>iPad</option>
+
+<option>Other tablet</option>
+
+<option>Computer component</option>
+
+<option>Games console</option>
+
+<option>Other technology</option>
+
+</select>
+
+</div>
+
+
+<div class="form-group">
+
+<label for="sellModel">
+Make & model
+</label>
+
+<input
+id="sellModel"
+name="Make and Model"
+type="text"
+placeholder="e.g. Dell Latitude 5411"
+required>
+
+</div>
+
+
+</div>
+
+
+<div class="form-row">
+
+
+<div class="form-group">
+
+<label for="sellCondition">
+Condition
+</label>
+
+<select
+id="sellCondition"
+name="Condition"
+required>
+
+<option value="">
+Please select
+</option>
+
+<option>Excellent</option>
+
+<option>Good</option>
+
+<option>Fair</option>
+
+<option>Working with faults</option>
+
+<option>Damaged</option>
+
+<option>Does not power on</option>
+
+<option>For parts / repair</option>
+
+<option>Not sure</option>
+
+</select>
+
+</div>
+
+
+<div class="form-group">
+
+<label for="sellPrice">
+How much would you like for it?
+</label>
+
+<input
+id="sellPrice"
+name="Seller Asking Price"
+type="text"
+placeholder="e.g. £80 or Not sure">
+
+</div>
+
+
+</div>
+
+
+<div class="form-group">
+
+<label for="sellSpecs">
+Specifications
+</label>
+
+<input
+id="sellSpecs"
+name="Specifications"
+type="text"
+placeholder="e.g. Intel i5, 16GB RAM, 512GB SSD">
+
+<p class="form-note">
+If you don't know the specifications, leave this blank.
+</p>
+
+</div>
+
+
+<div class="form-group">
+
+<label for="sellFaults">
+Known faults or damage
+</label>
+
+<textarea
+id="sellFaults"
+name="Known Faults"
+placeholder="Tell us about cracked screens, battery problems, charging problems, damaged casing, missing parts or other faults."></textarea>
+
+</div>
+
+
+<div class="form-group">
+
+<label for="sellLock">
+Account / Activation Lock status
+</label>
+
+<select
+id="sellLock"
+name="Account Lock Status">
+
+<option>
+Not applicable
+</option>
+
+<option>
+No account or activation lock
+</option>
+
+<option>
+iCloud / Apple Activation Lock present
+</option>
+
+<option>
+Google account lock present
+</option>
+
+<option>
+Other security lock
+</option>
+
+<option>
+I don't know
+</option>
+
+</select>
+
+<p class="form-note">
+
+Devices must belong to the person supplying them.
+Account or activation locks may need to be removed by the owner
+before a device can be reused or resold.
+
+</p>
+
+</div>
+
+
+<div class="form-group">
+
+<label for="sellExtras">
+Accessories included
+</label>
+
+<input
+id="sellExtras"
+name="Accessories Included"
+type="text"
+placeholder="e.g. charger, box, keyboard or power supply">
+
+</div>
+
+
+<div class="form-group">
+
+<label for="sellDetails">
+Anything else we should know?
+</label>
+
+<textarea
+id="sellDetails"
+name="Additional Device Information"
+placeholder="Tell us anything else that may help us assess the device."></textarea>
+
+</div>
+
+
+<h3>
+Your Details
+</h3>
+
+
+<div class="form-row">
+
+
+<div class="form-group">
+
+<label for="sellerName">
+Your name
+</label>
+
+<input
+id="sellerName"
+name="Seller Name"
+type="text"
+autocomplete="name"
+required>
+
+</div>
+
+
+<div class="form-group">
+
+<label for="sellerEmail">
+Email address
+</label>
+
+<input
+id="sellerEmail"
+name="email"
+type="email"
+autocomplete="email"
+required>
+
+</div>
+
+
+</div>
+
+
+<div class="form-group">
+
+<label for="sellerPhone">
+Telephone / WhatsApp number
+</label>
+
+<input
+id="sellerPhone"
+name="Seller Telephone"
+type="tel"
+autocomplete="tel"
+placeholder="Optional">
+
+</div>
+
+
+<input
+type="hidden"
+name="_subject"
+value="Brainy Elephant - Sell Your Tech Enquiry">
+
+
+<button
+class="button"
+type="submit">
+
+Send Device Details
+
+</button>
+
+
+<p class="form-note">
+
+Submitting details does not guarantee that Brainy Elephant will purchase the device.
+Any offer would be subject to the information supplied and,
+where appropriate, inspection of the equipment.
+
+</p>
+
+
+<div class="photo-information">
+
+<h3>
+Send Us Photographs
+</h3>
+
+<p>
+
+Photographs can help us assess your device.
+You can send pictures of the front, back, screen,
+model information and any damage directly to Brainy Elephant on WhatsApp.
+
+</p>
+
+<a
+class="button whatsapp-button"
+href="https://wa.me/447784372570?text=Hi%20Brainy%20Elephant%2C%20I%27ve%20submitted%20a%20Sell%20Your%20Tech%20enquiry%20and%20would%20like%20to%20send%20photos%20of%20my%20device."
+target="_blank"
+rel="noopener noreferrer">
+
+Send Photos on WhatsApp
+
+</a>
+
+</div>
+
+
+</form>
+
+</section>
+
+
+<!-- ================================
+     SERVICE ENQUIRY
+================================ -->
+
+<section
+class="quote-section"
+id="service-enquiry">
+
+<h2 class="section-title">
+Repairs, Upgrades & Services
+</h2>
+
+<p class="section-intro">
+
+Tell us what equipment you have
+and what you'd like help with.
+
+</p>
+
+
+<form
+class="quote-form"
+action="https://formspree.io/f/mrpeeknz"
+method="POST">
+
+
+<div class="form-row">
+
+
+<div class="form-group">
+
+<label for="request">
+What would you like help with?
+</label>
+
+<select
+id="request"
+name="Service Requested"
+required>
+
+<option value="">
+Please select
+</option>
+
+<option>
+Computer cleaning / maintenance
+</option>
+
+<option>
+RAM upgrade
+</option>
+
+<option>
+SSD / storage upgrade
+</option>
+
+<option>
+Data transfer
+</option>
+
+<option>
+New computer setup
+</option>
+
+<option>
+Computer problem / assessment
+</option>
+
+<option>
+Donate technology
+</option>
+
+<option>
+Something else
+</option>
+
+</select>
+
+</div>
+
+
+<div class="form-group">
+
+<label for="device">
+Device type
+</label>
+
+<select
+id="device"
+name="Device Type"
+required>
+
+<option value="">
+Please select
+</option>
+
+<option>
+Desktop computer
+</option>
+
+<option>
+Laptop
+</option>
+
+<option>
+Phone
+</option>
+
+<option>
+Tablet
+</option>
+
+<option>
+Storage drive
+</option>
+
+<option>
+Other technology
+</option>
+
+</select>
+
+</div>
+
+
+</div>
+
+
+<div class="form-group">
+
+<label for="model">
+Make & model
+</label>
+
+<input
+id="model"
+name="Make and Model"
+type="text"
+placeholder="e.g. Dell OptiPlex or Lenovo ThinkPad">
+
+</div>
+
+
+<div class="form-group">
+
+<label for="details">
+Tell us more
+</label>
+
+<textarea
+id="details"
+name="Enquiry Details"
+placeholder="Describe the equipment and the service or help you need."
+required></textarea>
+
+</div>
+
+
+<div class="form-row">
+
+
+<div class="form-group">
+
+<label for="name">
+Your name
+</label>
+
+<input
+id="name"
+name="Customer Name"
+type="text"
+autocomplete="name"
+required>
+
+</div>
+
+
+<div class="form-group">
+
+<label for="email">
+Email address
+</label>
+
+<input
+id="email"
+name="email"
+type="email"
+autocomplete="email"
+required>
+
+</div>
+
+
+</div>
+
+
+<div class="form-group">
+
+<label for="servicePhone">
+Telephone / WhatsApp number
+</label>
+
+<input
+id="servicePhone"
+name="Customer Telephone"
+type="tel"
+autocomplete="tel"
+placeholder="Optional">
+
+</div>
+
+
+<input
+type="hidden"
+name="_subject"
+value="New Brainy Elephant Service Enquiry">
+
+
+<button
+class="button"
+type="submit">
+
+Submit Enquiry
+
+</button>
+
+
+<p class="form-note">
+
+By submitting this form,
+you are sending the information above to Brainy Elephant
+so that we can respond to your enquiry.
+
+</p>
+
+
+</form>
+
+</section>
+
+
+<!-- ================================
+     SHOP
+================================ -->
+
+<section class="shop-coming" id="shop">
+
+<div class="shop-box">
+
+<div class="shop-icon">
+BE
+</div>
+
+<h2>
+Brainy Elephant Shop
+</h2>
+
+<h3>
+Our first stock is coming soon.
+</h3>
+
+<p>
+
+We're currently sourcing technology for the Brainy Elephant shop.
+
+When stock becomes available,
+you'll be able to find selected computers,
+phones, tablets and accessories here.
+
+</p>
+
+
+<div class="shop-categories-preview">
+
+<span>
+Computers
+</span>
+
+<span>
+Laptops
+</span>
+
+<span>
+Phones
+</span>
+
+<span>
+Tablets
+</span>
+
+<span>
+Accessories
+</span>
+
+</div>
+
+
+<p>
+
+Have technology you'd like to sell?
+
+You could help build our first stock.
+
+</p>
+
+
+<a href="#sell-form" class="button">
+Sell Your Tech
+</a>
+
+<a
+href="https://wa.me/447784372570?text=Hi%20Brainy%20Elephant%2C%20I%27d%20like%20to%20ask%20about%20your%20technology%20shop."
+target="_blank"
+rel="noopener noreferrer"
+class="button button-blue">
+
+Ask About Stock
+
+</a>
+
+</div>
+
+</section>
+
+
+<!-- ================================
+     REUSE
+================================ -->
+
+<section class="reuse" id="reuse">
+
+<h2 class="section-title">
+Give Technology Another Life
+</h2>
+
+
+<div class="reuse-content">
+
+<p>
+
+Some unwanted technology doesn't need to become waste.
+
+Where practical,
+Brainy Elephant aims to assess suitable equipment
+for repair and reuse.
+
+</p>
+
+
+<p>
+
+Equipment that can be economically repaired may be prepared
+for reuse and potentially made available to charities
+or community organisations,
+with an appropriate contribution towards repair and preparation costs
+where applicable.
+
+</p>
+
+
+<div class="reuse-note">
+
+<strong>
+Device security matters.
+</strong>
+
+<p>
+
+Phones, tablets and computers should belong to the person supplying them.
+
+Apple Activation Lock,
+Google account locks and other security locks may need to be removed
+by the owner before equipment can be reused or resold.
+
+</p>
+
+</div>
+
+
+<a href="#service-enquiry" class="button">
+Donate Unwanted Tech
+</a>
+
+</div>
+
+</section>
+
+
+<!-- ================================
+     TRUST
+================================ -->
+
+<section class="trust">
+
+<div class="trust-grid">
+
+
+<div>
+
+<h3>
+Independent
+</h3>
+
+<p>
+Independent UK technology business.
+</p>
+
+</div>
+
+
+<div>
+
+<h3>
+Repair Before Replace
+</h3>
+
+<p>
+Where sensible,
+keeping existing technology working can be the smarter option.
+</p>
+
+</div>
+
+
+<div>
+
+<h3>
+Clear Descriptions
+</h3>
+
+<p>
+Pre-owned equipment will be described clearly when stock becomes available.
+</p>
+
+</div>
+
+
+<div>
+
+<h3>
+Reuse
+</h3>
+
+<p>
+Helping useful technology avoid unnecessary waste.
+</p>
+
+</div>
+
+
+</div>
+
+</section>
+
+
+<!-- ================================
+     ABOUT
+================================ -->
+
+<section class="about-section" id="about">
+
+<h2 class="section-title">
+About Brainy Elephant
+</h2>
+
+
+<div class="about">
+
+<p>
+
+Brainy Elephant is an independent British technology business
+focused on practical technology,
+sensible prices
+and getting more useful life from existing equipment.
+
+</p>
+
+<p>
+
+Our aim is to combine technology sales
+with computer maintenance,
+upgrades,
+accessible-data transfers
+and responsible reuse.
+
+</p>
+
+<p>
+
+As our stock grows,
+the Brainy Elephant online shop will offer selected technology
+alongside these services.
+
+</p>
+
+<strong>
+Smart tech. Smarter prices.
+</strong>
+
+</div>
+
+</section>
+
+
+<!-- ================================
+     CONTACT
+================================ -->
+
+<section class="contact" id="contact">
+
+<h2 class="section-title">
+Contact Brainy Elephant
+</h2>
+
+<p class="section-intro">
+
+Want to sell technology,
+ask about a computer service,
+or simply make an enquiry?
+
+</p>
+
+
+<div class="contact-box">
+
+<h3>
+WhatsApp Brainy Elephant
+</h3>
+
+<p class="phone-number">
+07784 372570
+</p>
+
+<p>
+
+You can contact Brainy Elephant on WhatsApp,
+including sending photographs of technology you'd like us to assess.
+
+</p>
+
+
+<a
+class="button whatsapp-button"
+href="https://wa.me/447784372570?text=Hi%20Brainy%20Elephant%2C%20I%27d%20like%20to%20make%20an%20enquiry."
+target="_blank"
+rel="noopener noreferrer">
+
+Message Us on WhatsApp
+
+</a>
+
+
+<br>
+
+
+<a href="#service-enquiry" class="button button-blue">
+Service Enquiry
+</a>
+
+
+<a href="#sell-form" class="button">
+Sell Your Tech
+</a>
+
+
+</div>
+
+</section>
+
+
+<!-- ================================
+     FOOTER
+================================ -->
+
+<footer>
+
+<strong>
+BRAINY ELEPHANT
+</strong>
+
+<p>
+Technology • Computer Services • Upgrades • Data Transfers • Reuse
+</p>
+
+<p>
+Smart tech. Smarter prices.
+</p>
+
+
+<div class="footer-links">
+
+<a href="#home">
+Home
+</a>
+
+<a href="#services">
+Services
+</a>
+
+<a href="#sell">
+Sell Your Tech
+</a>
+
+<a href="#shop">
+Shop
+</a>
+
+<a href="#about">
+About
+</a>
+
+<a href="#contact">
+Contact
+</a>
+
+</div>
+
+
+<p>
+WhatsApp: 07784 372570
+</p>
+
+<p>
+© 2026 Brainy Elephant. All rights reserved.
+</p>
+
+</footer>
+
+
+</body>
+
+</html>
