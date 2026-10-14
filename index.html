@@ -9,7 +9,7 @@
 
 <meta name="description" content="Brainy Elephant - independent British technology business offering computer services, upgrades, data transfers, technology reuse and a simple way to sell unwanted tech.">
 
-<title>Brainy Elephant | Smart Tech. Smarter Prices.</title>
+<title>Brainy Elephant | Be Brainy. Be Yourself.</title>
 
 <style>
 
@@ -129,6 +129,25 @@ header {
     font-size: 30px;
     font-weight: 800;
     letter-spacing: 1px;
+}
+
+.brand-mark {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.be-monogram {
+    width: 52px;
+    height: 52px;
+    border: 2px solid white;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    flex: 0 0 auto;
+    font-size: 20px;
+    font-weight: 900;
+    letter-spacing: -1px;
 }
 
 .logo-tagline {
@@ -261,6 +280,54 @@ nav a:hover {
     color: #666;
 }
 
+
+/* ================================
+   PRODUCTS
+================================ */
+
+.products-section {
+    background: #07194a;
+    color: white;
+}
+
+.products-section .section-title {
+    color: white;
+}
+
+.products-section .section-intro {
+    color: #d9e1f2;
+}
+
+.product-grid {
+    max-width: 1100px;
+    margin: auto;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 22px;
+}
+
+.product-card {
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 10px;
+    padding: 28px 24px;
+    background: rgba(255,255,255,0.06);
+}
+
+.product-card .product-brand {
+    font-size: 12px;
+    letter-spacing: 2px;
+    color: #d9e1f2;
+}
+
+.product-card h3 {
+    margin: 8px 0 10px;
+    font-size: 23px;
+}
+
+.product-card p {
+    color: #d9e1f2;
+    line-height: 1.6;
+}
 
 /* ================================
    SERVICES
@@ -686,6 +753,7 @@ footer p {
 
     .quick-trust-grid,
     .services-grid,
+    .product-grid,
     .trust-grid {
         grid-template-columns: 1fr 1fr;
     }
@@ -729,6 +797,7 @@ footer p {
 
     .quick-trust-grid,
     .services-grid,
+    .product-grid,
     .trust-grid,
     .form-row {
         grid-template-columns: 1fr;
@@ -763,7 +832,7 @@ footer p {
 
 <div class="top-strip">
 
-Independent British technology business • Smart tech. Smarter prices.
+Independent British technology business • Be Brainy. Be Yourself.
 
 </div>
 
@@ -774,12 +843,12 @@ Independent British technology business • Smart tech. Smarter prices.
 
 <div class="brand">
 
-<div class="logo">
-BRAINY ELEPHANT
+<div class="brand-mark">
+<div class="be-monogram" aria-hidden="true">BE</div>
+<div>
+<div class="logo">BRAINY ELEPHANT</div>
+<div class="logo-tagline">Be Brainy. Be Yourself.</div>
 </div>
-
-<div class="logo-tagline">
-Technology • Repairs • Upgrades • Reuse
 </div>
 
 </div>
@@ -798,6 +867,10 @@ Technology • Repairs • Upgrades • Reuse
 
 <a href="#home">
 Home
+</a>
+
+<a href="#products">
+Products
 </a>
 
 <a href="#services">
@@ -842,7 +915,7 @@ Brainy Elephant
 </h1>
 
 <h2>
-Smart tech. Smarter prices.
+Be Brainy. Be Yourself.
 </h2>
 
 <p>
@@ -862,6 +935,43 @@ Computer Services
 <a href="#sell" class="button">
 Sell Your Tech
 </a>
+
+</section>
+
+
+<!-- ================================
+     BRAINY ELEPHANT PRODUCTS
+================================ -->
+
+<section class="products-section" id="products">
+
+<h2 class="section-title">The Brainy Elephant Family</h2>
+
+<p class="section-intro">
+One Brainy Elephant identity, with a distinct name for each product we create.
+</p>
+
+<div class="product-grid">
+
+<div class="product-card">
+<div class="product-brand">BRAINY ELEPHANT</div>
+<h3>WORD MASTER</h3>
+<p>An original word-board game project built around language, strategy and the evolving Living Lexicon.</p>
+</div>
+
+<div class="product-card">
+<div class="product-brand">BRAINY ELEPHANT</div>
+<h3>LIGHT YEARS LEARNING</h3>
+<p>Interactive learning designed to encourage curiosity, reasoning and independent exploration.</p>
+</div>
+
+<div class="product-card">
+<div class="product-brand">BRAINY ELEPHANT</div>
+<h3>JOHN SMYTHE RESEARCH</h3>
+<p>Research tools designed to make complex source material easier to explore and understand.</p>
+</div>
+
+</div>
 
 </section>
 
@@ -1983,7 +2093,7 @@ alongside these services.
 </p>
 
 <strong>
-Smart tech. Smarter prices.
+Be Brainy. Be Yourself.
 </strong>
 
 </div>
@@ -2046,7 +2156,7 @@ Technology • Computer Services • Upgrades • Data Transfers • Reuse
 </p>
 
 <p>
-Smart tech. Smarter prices.
+Be Brainy. Be Yourself.
 </p>
 
 
