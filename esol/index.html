@@ -1,12 +1,14 @@
 <!doctype html>
 <html lang="en-GB"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="description" content="Brainy Elephant ESOL prototype learning and practice assessments."><title>ESOL Learning | Brainy Elephant</title>
+<link rel="manifest" href="/esol/manifest.webmanifest"><meta name="theme-color" content="#012169"><link rel="icon" type="image/svg+xml" href="/esol/icon.svg"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="BE ESOL">
 <style>
 :root{--navy:#012169;--dark:#07194a;--red:#c8102e;--ink:#1a2635;--grey:#f3f5f8}*{box-sizing:border-box}body{font-family:Arial,Helvetica,sans-serif;margin:0;color:var(--ink);background:var(--grey);line-height:1.6}a{color:var(--navy)}header{background:var(--navy);border-bottom:5px solid var(--red);color:#fff;padding:21px max(20px,calc((100vw - 1050px)/2))}header a{color:#fff;text-decoration:none;font-weight:700}main{max-width:1050px;margin:auto;padding:45px 20px 70px}h1{color:var(--navy);font-size:clamp(2rem,4vw,3rem);line-height:1.2;margin-bottom:10px}h2{color:var(--navy)}.intro{max-width:780px;font-size:1.12rem}.notice{background:#fff;border-left:5px solid var(--red);padding:17px 20px;margin:26px 0 36px;border-radius:5px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:18px}.card{background:#fff;border:1px solid #dbe1eb;border-radius:10px;padding:24px;display:flex;flex-direction:column}.card small{font-weight:700;color:#52647c;letter-spacing:.06em}.card h2{margin:10px 0 5px;font-size:1.5rem}.card p{margin-top:5px;flex:1}.card a{background:var(--navy);color:#fff;display:inline-block;text-align:center;padding:11px 16px;border-radius:6px;text-decoration:none;font-weight:700}.card a:hover{background:var(--dark)}.muted{color:#57667b}.soon{font-weight:700;color:#6a7483}footer{background:var(--dark);padding:24px;color:#fff;text-align:center;font-size:.9rem}footer a{color:#fff}a:focus-visible{outline:3px solid #eeac22;outline-offset:3px}
 </style></head><body>
 <header><a href="/">BRAINY ELEPHANT</a> &nbsp; / &nbsp; ESOL Learning</header>
 <main><h1>ESOL Learning</h1><p class="intro">Independent English-language learning resources, with practical lessons, repeatable practice questions and progress tracking.</p>
 <div class="notice"><strong>Development previews — free to explore.</strong> These resources are being reviewed and tested. Your progress currently stays in your browser on your device; there is no account login, payment system or certificate issuing facility yet. These are not regulated ESOL qualifications.</div>
+<section class="notice" aria-labelledby="device-title" style="border-left-color:#012169"><h2 id="device-title" style="margin-top:0">Use ESOL on your phone or computer</h2><p>The same website works on both. On supported Android browsers choose <strong>Install app</strong> or <strong>Add to Home screen</strong> from the browser menu. On iPhone, use Safari → Share → <strong>Add to Home Screen</strong>. No app-store download is required for this web version.</p><button id="install-button" type="button" hidden style="background:#012169;color:#fff;border:0;border-radius:6px;padding:12px 18px;font:inherit;font-weight:bold;cursor:pointer">Install ESOL web app</button><p class="muted" style="margin-bottom:0">No paid access or cross-device progress syncing is active yet. The prototype is currently free to explore.</p></section>
 <h2>Learning and assessments</h2>
 <div class="grid">
 <article class="card"><small>COMING LATER</small><h2>ESOL 1</h2><p>Website learning version is still being prepared.</p><span class="soon">Not available online yet</span></article>
@@ -17,4 +19,15 @@
 <article class="card"><small>ASSESSMENT • PROTOTYPE</small><h2>ESOL Final Test</h2><p>A practice assessment covering topics from the available learning levels. Not an accredited exam.</p><a href="./final-test/">Open practice test</a></article>
 </div><p class="muted" style="margin-top:35px">Important: Lesson content and assessment standards are still under review. A high practice score does not establish competence in speaking, listening or independent writing.</p>
 <p><a href="/">← Return to Brainy Elephant homepage</a></p></main>
-<footer>© 2026 Brainy Elephant · Education with a difference</footer></body></html>
+<footer>© 2026 Brainy Elephant · Education with a difference</footer><script>
+if ("serviceWorker" in navigator) { window.addEventListener("load", () => navigator.serviceWorker.register("/esol/sw.js", {scope:"/esol/"}).catch(() => {})); }
+let installPrompt;
+const installButton = document.getElementById("install-button");
+window.addEventListener("beforeinstallprompt", event => { event.preventDefault(); installPrompt=event; installButton.hidden=false; });
+installButton.addEventListener("click", async () => {
+ if (!installPrompt) return;
+ const event = installPrompt; installPrompt = null; installButton.hidden = true;
+ await event.prompt();
+});
+window.addEventListener("appinstalled", () => { installPrompt=null; installButton.hidden=true; });
+</script></body></html>
