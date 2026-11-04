@@ -1,30 +1,38 @@
-# Brainy Elephant ESOL — Account and results infrastructure (draft)
+# Brainy Elephant ESOL — Supabase integration status (4 November 2026)
 
-Status: **Design committed; NOT deployed.** Existing ESOL pages remain free development previews.
+**Dedicated project deployed:** `brainy-elephant-esol` (London, EU West 2)
+Project reference: `lovvxmlcpsbvmlxezora`
 
-## Why a separate project?
-The connected Supabase account currently has a **word-master** project and a **john-smythe-feedback** project. Neither is an appropriate destination for ESOL learners' names, subscription status or results. A dedicated Supabase project is needed before enabling registration.
+The database schema in `schema.sql` has been installed with four tables:
+`be_esol_learners`, `be_esol_progress`, `be_esol_assessment_attempts`, and `be_esol_entitlements`.
+All four use row-level security. The learner account and ESOL 2–5 learning pages now contain **development-preview** code to use this project.
 
-## Proposed data model
-- `be_esol_learners`: authenticated learner ID and chosen name for future certificates.
-- `be_esol_progress`: lesson completions by user, level and lesson ID.
-- `be_esol_assessment_attempts`: read-only to learners; future server-verified scores.
-- `be_esol_entitlements`: read-only to learners; future paid-access grants.
+## Implemented
+- Email/password sign-in and account-creation frontend (requires redirect configuration before public testing)
+- Chosen certificate display name stored per user
+- Lesson completion synced for signed-in users in ESOL levels 2–5
+- Learner dashboard listing course progress
+- Learners can only read their own profile, progress, scored attempts and entitlements
+- Unauthenticated users receive no table privileges
+- No client insert/update rights for assessed scores or subscription entitlements
 
-Security uses row-level policies to restrict each learner to their own records. Client browsers cannot create scores, payment entitlements or certificates.
+## IMPORTANT: Not ready for public enrolment or charging
+1. Configure **Supabase Auth → URL Configuration**:
+   Site URL: `https://brainyelephant.com`
+   Allowed redirect URL: `https://brainyelephant.com/esol/account/`
+2. Verify domain publishing and confirmation emails from two separate test accounts.
+3. Test row-level security across different actual learners, including denial of access to other users' records.
+4. Verify the pinned Supabase JS library loads on devices and browsers; validate account creation, sign-in, sign-out and course sync.
+5. Add privacy notice, deletion/export mechanism, retention schedule and a suitable transactional email service before public launch.
+6. Google and Apple providers need their own OAuth configuration; not enabled.
+7. Secure server-side assessment grading and separate questions are essential for credible certificates. The current practice-test scores are **not stored as authoritative assessment attempts**.
+8. Stripe integration, webhooks, subscription cancellation and entitlement grants remain pending.
+9. Publish paid-access safeguards with a server-side gate. GitHub Pages public HTML cannot safely restrict access just with frontend JS.
 
-## Deployment checklist
-1. Create a **dedicated Brainy Elephant ESOL** project and confirm the cost first.
-2. Apply `database/schema.sql` to that project's database after checking migrations and table-name conflicts.
-3. Check policies using two distinct test accounts; ensure one account cannot read or alter the other's records.
-4. Configure verified email sign-in and approved redirect URLs under Auth settings.
-5. Set up Google and Apple identity providers separately, if desired.
-6. Add a secure backend that grades final assessment submissions and keeps question-answer keys server-side.
-7. Add Stripe webhooks and payment checks before granting paid access.
-8. Update the website only after end-to-end account, cancellation and payment tests.
-9. Publish a privacy notice, retention policy, account deletion flow and certificate eligibility criteria.
+## Security notes
+- `supabase-config.js` holds only a public project URL and a publishable API key; never publish a secret/service-role key.
+- Every learner-facing table has RLS policies restricting rows by `auth.uid()`.
+- Learners may record their **own practice lesson completions**; they cannot grant themselves a subscription or verified exam score.
+- Site is a **free development preview**. No certificates are issued.
 
-**No sign-in controls, payment buttons, learner data or certificates have been enabled.**
-
-## Assessment integrity
-The current browser-based final test exposes correct answers in its page code. It is a revision tool and cannot establish certificate eligibility or enforce paid access. In a future certified assessment, authorised back-end grading must use protected question banks and issue a unique attempt ID. Never calculate the authoritative score or entitlement solely in client-side JavaScript.
+This document supersedes the earlier draft checklist.
