@@ -41,7 +41,10 @@ if(url.pathname==='/testers'&&String(user.email).toLowerCase()==='brainyelephant
 if(url.pathname==='/esol/account/'||url.pathname==='/esol/account')return response(res,200,page('<h1>Your tester account</h1><p>Signed in as <strong>'+esc(user.email)+'</strong>.</p><p>Your lessons are saved separately for this account in the current browser. Cross-device syncing is not yet enabled.</p>'+(String(user.email).toLowerCase()==='brainyelephant1001@gmail.com'?'<p><a href="/testers">View five tester places</a></p>':'')+'<p><a class="action" href="/esol/">Go to lessons</a></p><form action="/logout" method="post"><button type="submit">Sign out</button></form>','Your ESOL tester account'));
 const file=fileLocation(req.url);if(!file||!fs.existsSync(file)||!fs.statSync(file).isFile())return response(res,404,'Not found','text/plain');
 if(!['.html','.js','.css','.png','.svg','.ico'].includes(path.extname(file)))return response(res,403,'Forbidden','text/plain');
-let contents=fs.readFileSync(file);if(path.extname(file)==='.html')contents=gatedStorage(contents.toString('utf8'),user.id);
+let contents=fs.readFileSync(file);if(path.extname(file)==='.html'){
+ const nav='<nav aria-label="ESOL tester navigation" style="display:flex;flex-wrap:wrap;align-items:center;gap:12px;padding:12px 20px;background:#e8eff9;border-bottom:1px solid #b4c7df;font:600 15px/1.4 Arial,sans-serif"><a href="/esol/" style="color:#012169">ESOL Home</a><a href="/esol/account/" style="color:#012169">My Account</a><form method="post" action="/logout" style="margin:0 0 0 auto"><button type="submit" style="background:#012169;color:white;border:0;border-radius:5px;padding:8px 12px;font:inherit;cursor:pointer">Sign out</button></form></nav>';
+ contents=gatedStorage(contents.toString('utf8').replace(/<body([^>]*)>/i,(match)=>match+nav),user.id);
+}
 return response(res,200,contents,mime[path.extname(file)]);
 }catch(err){console.error('Private ESOL request failed',err.message);return response(res,500,'Temporary server error','text/plain')}
 });
