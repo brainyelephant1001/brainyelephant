@@ -23,15 +23,18 @@ function show(parts){screen.replaceChildren(...parts)}
 function paragraph(t,cls){return n('p',t,cls)}
 function shuffle(items){let a=[...items];for(let i=a.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));let temp=a[i];a[i]=a[j];a[j]=temp}return a}
 function completedLevels(){
- return [2,3,4,5].filter(level=>{
-  try{const data=JSON.parse(localStorage.getItem('be-esol'+level+'-web-v1')||'{}');return Array.isArray(data.lessonRuns)&&data.lessonRuns.some(x=>Array.isArray(x.answers)&&x.answers.length===10)}catch(e){return false}
+ return [1,2,3,4,5].filter(level=>{
+  try{
+   if(level===1){const d=JSON.parse(localStorage.getItem('be-esol1-foundations-web-v1')||'{}');return Array.isArray(d.completed)&&new Set(d.completed).size===24&&Array.isArray(d.attempts)&&d.attempts.some(a=>a.total===20)}
+   const data=JSON.parse(localStorage.getItem('be-esol'+level+'-web-v1')||'{}');return Array.isArray(data.lessonRuns)&&data.lessonRuns.some(x=>Array.isArray(x.answers)&&x.answers.length===10);
+  }catch(e){return false}
  });
 }
 function readinessGate(){
  const completed=completedLevels();
- if(completed.length===4)return true;
- const missing=[2,3,4,5].filter(level=>!completed.includes(level));
- const message=[n('h1','Complete your lessons first'),n('div','You have completed '+completed.length+' of 4 ESOL levels. Complete a full 10-question lesson set in ESOL '+missing.join(', ')+' to unlock this final practice test.','note warning')];
+ if(completed.length===5)return true;
+ const missing=[1,2,3,4,5].filter(level=>!completed.includes(level));
+ const message=[n('h1','Complete your lessons first'),n('div','You have completed '+completed.length+' of 5 ESOL levels. Complete a full 10-question lesson set in ESOL '+missing.join(', ')+' to unlock this final practice test.','note warning')];
  const link=document.createElement('a');link.href='/esol/';link.textContent='Return to ESOL learning menu';message.push(link);
  show(message);return false;
 }
