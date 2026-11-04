@@ -1,0 +1,19 @@
+{
+  "id": "/esol/",
+  "name": "Brainy Elephant ESOL Learning",
+  "short_name": "BE ESOL",
+  "description": "Independent English language lessons and practice assessments — development previews",
+  "start_url": "/esol/",
+  "scope": "/esol/",
+  "display": "standalone",
+  "background_color": "#f3f5f8",
+  "theme_color": "#012169",
+  "icons": [
+    {
+      "src": "/esol/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
