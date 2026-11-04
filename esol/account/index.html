@@ -61,7 +61,16 @@ byId("email-form").addEventListener("submit",async e=>{e.preventDefault();const 
  message("Checking sign-in…");const {error}=await db.auth.signInWithPassword({email,password});if(error){message(error.message,true);return}message("Signed in.");await refresh()});
 byId("signup").addEventListener("click",async()=>{const email=byId("email").value.trim(),password=byId("password").value;if(!email||password.length<8){message("Please provide an email and a password of at least 8 characters.",true);return}
  message("Submitting registration…");const {error}=await db.auth.signUp({email,password,options:{emailRedirectTo:ESOL_ACCOUNT_REDIRECT}});message(error?error.message:"Registration requested. Check your email for a confirmation link. If it does not return to Brainy Elephant, the Auth redirect configuration still needs updating.",!!error)});
-byId("save-name").addEventListener("click",async()=>{if(!currentUser)return;const certificate_name=byId("certificate-name").value.trim();const {error}=await db.from("be_esol_learners").upsert({user_id:currentUser.id,certificate_name},{onConflict:"user_id"});message(error?"Could not save name: "+error.message:"Name saved.",!!error)});
+byId("save-name").addEventListener("click",async()=>{
+ if(!currentUser)return;
+ const certificate_name=byId("certificate-name").value.trim();
+ const {data:existing,error:readError}=await db.from("be_esol_learners").select("user_id").eq("user_id",currentUser.id).maybeSingle();
+ if(readError){message("Could not check profile: "+readError.message,true);return}
+ const result=existing
+  ? await db.from("be_esol_learners").update({certificate_name}).eq("user_id",currentUser.id)
+  : await db.from("be_esol_learners").insert({user_id:currentUser.id,certificate_name});
+ message(result.error?"Could not save name: "+result.error.message:"Name saved.",!!result.error);
+});
 byId("logout").addEventListener("click",async()=>{const {error}=await db.auth.signOut();message(error?error.message:"Signed out.",!!error);await refresh()});
 db.auth.onAuthStateChange(()=>{setTimeout(()=>refresh().catch(e=>message(e.message,true)),0)});
 refresh().catch(e=>message("Account setup not fully ready: "+e.message,true));
