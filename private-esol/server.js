@@ -22,7 +22,7 @@ if(!r.ok&&c.esol_rt){const renewed=await supabase('token?grant_type=refresh_toke
 if(!r.ok){clear(res);return null}
 const user=r.data;if(!user.email_confirmed_at||!ALLOWED.has(String(user.email||'').toLowerCase()))return null;
 authCache.set(token,{user,until:Date.now()+45000});if(authCache.size>250)authCache.clear();return user}
-function fileLocation(url){const pathname=decodeURIComponent(new URL(url,'http://local').pathname);if(!pathname.startsWith('/esol/'))return null;if(pathname.split('/').some(s=>s==='..'||s.startsWith('.')))return null;let file=path.resolve(ROOT,'.'+pathname);if(!file.startsWith(path.join(ROOT,'esol')+path.sep))return null;if(path.extname(file)==='')file=path.join(file,'index.html');return file}
+function fileLocation(url){const pathname=decodeURIComponent(new URL(url,'http://local').pathname);if(!pathname.startsWith('/esol/'))return null;if(pathname.split('/').some(s=>s==='..'||s.startsWith('.')))return null;let file=path.resolve(ROOT,'.'+pathname);if(path.extname(file)==='')file=path.join(file,'index.html');if(!file.startsWith(path.join(ROOT,'esol')+path.sep))return null;return file}
 function gatedStorage(html,id){const prefix=JSON.stringify('be-test:'+id+':');const shim='<script>window.__esolStorageKey=k=>'+prefix+'+k;</script>';html=html.replace(/<script/,shim+'<script');return html.replace(/localStorage\.(getItem|setItem)\(([^,\)]+)/g,(m,op,arg)=>'localStorage.'+op+'(window.__esolStorageKey('+arg.trim()+')');}
 const mime={'.html':'text/html; charset=utf-8','.js':'application/javascript; charset=utf-8','.css':'text/css; charset=utf-8','.png':'image/png','.svg':'image/svg+xml','.ico':'image/x-icon'};
 const server=http.createServer(async(req,res)=>{try{
