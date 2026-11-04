@@ -1,3 +1,0 @@
-User-agent: *
-Allow: /
-Sitemap: https://brainyelephant.com/sitemap.xml
