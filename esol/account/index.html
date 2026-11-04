@@ -54,7 +54,7 @@ async function refresh(){
  byId("certificate-name").value=profile.data?.certificate_name||"";
  if(progress.error){message("Progress could not be loaded: "+progress.error.message,true);return}
  const list=byId("progress-list");list.replaceChildren();
- if(!progress.data?.length){list.append(document.createElement("li")).textContent="No completed lessons synced yet.";return}
+ if(!progress.data?.length){const li=document.createElement("li");li.textContent="No completed lessons synced yet.";list.append(li);return}
  for(const p of progress.data){const li=document.createElement("li");li.textContent="ESOL "+p.level_number+" — Lesson "+p.lesson_id;list.append(li)}
 }
 byId("email-form").addEventListener("submit",async e=>{e.preventDefault();const email=byId("email").value.trim(),password=byId("password").value;
