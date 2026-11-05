@@ -18,7 +18,7 @@ li{padding:5px 0}button:focus-visible,a:focus-visible,input:focus-visible{outlin
 </style></head><body>
 <header><a href="/">BRAINY ELEPHANT</a> / <a href="/esol/">ESOL Learning</a></header>
 <main><h1>My ESOL learner account</h1>
-<div class="notice"><strong>Development test only.</strong> The account system is not fully launched. Email sign-up and confirmation redirects require final configuration and testing. Do not use a work-critical password or rely on this page for certificates. Google/Apple sign-in and paid access are not yet enabled.</div>
+<div class="notice"><strong>Private learner testing.</strong> Sign in to save progress across the five Brainy Elephant ESOL course levels. Course completion is educational progress and is not a regulated qualification result.</div>
 <section class="panel" id="guest"><h2>Sign in or register</h2>
 <form id="email-form"><label for="email">Email address</label><input id="email" name="email" type="email" autocomplete="email" required maxlength="254">
 <label for="password">Password (at least 8 characters)</label><input id="password" name="password" type="password" autocomplete="current-password" required minlength="8">
@@ -29,7 +29,7 @@ li{padding:5px 0}button:focus-visible,a:focus-visible,input:focus-visible{outlin
 <p id="email-display"></p>
 <label for="certificate-name">Name to display on a future certificate</label><input id="certificate-name" type="text" maxlength="160" autocomplete="name">
 <div><button id="save-name" type="button">Save name</button><button id="logout" type="button" class="secondary">Sign out</button></div>
-<h3>Saved course progress</h3><ul id="progress-list"></ul>
+<h3>Saved course progress</h3><div id="progress-summary"></div><ul id="progress-list"></ul><p><a href="/esol/">Continue learning</a> · <a href="/esol/final-test/">Practice questionnaire</a></p>
 <p><small>This records lesson completion only. It does not prove ESOL proficiency or issue a certificate. Assessments and payment subscriptions are not active here.</small></p>
 </section>
 <p id="message" role="status" aria-live="polite"></p>
@@ -53,9 +53,9 @@ async function refresh(){
  if(profile.error)message("Profile could not be loaded: "+profile.error.message,true);
  byId("certificate-name").value=profile.data?.certificate_name||"";
  if(progress.error){message("Progress could not be loaded: "+progress.error.message,true);return}
- const list=byId("progress-list");list.replaceChildren();
- if(!progress.data?.length){const li=document.createElement("li");li.textContent="No completed lessons synced yet.";list.append(li);return}
- for(const p of progress.data){const li=document.createElement("li");li.textContent="ESOL "+p.level_number+" — Lesson "+p.lesson_id;list.append(li)}
+ const list=byId("progress-list");list.replaceChildren();const rows=progress.data||[],counts=[1,2,3,4,5].map(level=>({level,count:new Set(rows.filter(p=>p.level_number===level).map(p=>p.lesson_id)).size}));byId("progress-summary").innerHTML=counts.map(x=>'<p><b>'+(['','Entry Level 1','Entry Level 2','Entry Level 3','Level 1','Level 2'][x.level])+':</b> '+x.count+' / 210 lessons completed</p>').join('');
+ if(!rows.length){const li=document.createElement("li");li.textContent="No completed lessons synced yet.";list.append(li);return}
+ const recent=[...rows].sort((a,b)=>String(b.completed_at).localeCompare(String(a.completed_at))).slice(0,10);for(const p of recent){const li=document.createElement("li");li.textContent="Level "+p.level_number+" — "+p.lesson_id;list.append(li)}
 }
 byId("email-form").addEventListener("submit",async e=>{e.preventDefault();const email=byId("email").value.trim(),password=byId("password").value;
  message("Checking sign-in…");const {error}=await db.auth.signInWithPassword({email,password});if(error){message(error.message,true);return}message("Signed in.");await refresh()});
