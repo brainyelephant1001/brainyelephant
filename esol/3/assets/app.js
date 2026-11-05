@@ -17,7 +17,19 @@ if(x.section==='Reading'){
  if(openDays)qs.push({q:'What days is it open?',hint:text});if(hours[1])qs.push({q:'What time does it open?',hint:text});if(hours[2])qs.push({q:'What time does it close?',hint:text});if(closed)qs.push({q:'What days is it closed?',hint:text});if(door)qs.push({q:'Which door should you use?',hint:text});
  if(!qs.length&&x.question&&/\?$/.test(String(x.question).trim()))qs.push({q:String(x.question).trim(),hint:text});
 }
-if(!qs.length){qs=p.filter(isQuestion).slice(0,5).map(q=>({q:simplify(q),hint:text}));}
+if(!qs.length&&x.section==='Reading'){
+ const lines=text.split(/\n+/).map(s=>s.trim()).filter(Boolean),events=[];
+ for(const line of lines){const m=line.match(/^([0-9]{1,2}(?::[0-9]{2})?)\s+(.+)$/);if(m)events.push({time:m[1],activity:m[2]})}
+ const tomorrow=(text.match(/Tomorrow:\s*([^\n]+)/i)||[])[1];
+ if(events.length){
+  for(const e of events.slice(0,4)){
+   if(/meet\s+(.+)/i.test(e.activity)){const who=(e.activity.match(/meet\s+(.+)/i)||[])[1];qs.push({q:'What time do you meet '+who+'?',hint:text})}
+   else qs.push({q:'What time is '+e.activity.replace(/^(the\s+)/i,'')+'?',hint:text});
+  }
+  if(tomorrow){const tm=tomorrow.match(/(.+?)\s+(?:starts?|is)\s+at\s+([0-9:]+)/i);if(tm)qs.push({q:'What time does '+tm[1].trim()+' start tomorrow?',hint:text})}
+ }
+}
+if(!qs.length){qs=p.filter(isQuestion).filter(q=>!/what is (?:the text|this) (?:mainly )?about\?/i.test(String(q))).slice(0,5).map(q=>({q:simplify(q),hint:text}));}
 if(!qs.length&&x.question)qs.push({q:String(x.question).trim(),hint:text});
 return qs.slice(0,5)}
 function isQuestion(q){const s=String(q||'').trim();return /\?$/.test(s)||/^(what|where|when|who|why|how|which|is |are |do |does |can |should )/i.test(s)}
