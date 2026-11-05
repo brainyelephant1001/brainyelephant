@@ -2,10 +2,11 @@
 import {createClient} from "https://esm.sh/@supabase/supabase-js@2.118.0";
 import {ESOL_SUPABASE_URL,ESOL_SUPABASE_PUBLISHABLE_KEY} from "./supabase-config.js";
 const client=createClient(ESOL_SUPABASE_URL,ESOL_SUPABASE_PUBLISHABLE_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
-export async function getEsolUser(){const {data:{user}}=await client.auth.getUser();return user||null}
+export async function getEsolUser(){if(window.__BE_ESOL_PRIVATE_USER)return window.__BE_ESOL_PRIVATE_USER;const {data:{user}}=await client.auth.getUser();return user||null}
 export async function getEsolProgress(level){
  if(![1,2,3,4,5].includes(level))return [];
  const user=await getEsolUser();if(!user)return [];
+ if(window.__BE_ESOL_PRIVATE_USER){const r=await fetch("/api/esol/progress?level="+level);if(!r.ok)return [];return await r.json()}
  const {data,error}=await client.from("be_esol_progress").select("lesson_id,completed_at").eq("user_id",user.id).eq("level_number",level);
  if(error){console.warn("ESOL progress load unavailable",error.message);return []}
  return data||[];
@@ -15,6 +16,7 @@ export async function completeEsolLesson(level,lessonId){
  const id=String(lessonId||"").trim();
  if(!id||id.length>64)throw new Error("Invalid lesson ID.");
  const user=await getEsolUser();if(!user)throw new Error("Please sign in to save your progress.");
+ if(window.__BE_ESOL_PRIVATE_USER){const r=await fetch("/api/esol/progress",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({level,lesson_id:id})});if(!r.ok)throw new Error("Could not save progress.");return true}
  const {error}=await client.from("be_esol_progress").upsert({user_id:user.id,level_number:level,lesson_id:id},{onConflict:"user_id,level_number,lesson_id",ignoreDuplicates:true});
  if(error)throw error;return true;
 }
