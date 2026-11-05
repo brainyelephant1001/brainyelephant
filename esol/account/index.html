@@ -19,15 +19,15 @@ li{padding:5px 0}button:focus-visible,a:focus-visible,input:focus-visible{outlin
 <header><a href="/">BRAINY ELEPHANT</a> / <a href="/esol/">ESOL Learning</a></header>
 <main><h1>My ESOL learner account</h1>
 <div class="notice"><strong>Private learner testing.</strong> Sign in to save progress across the five Brainy Elephant ESOL course levels. Course completion is educational progress and is not a regulated qualification result.</div>
-<section class="panel" id="guest"><h2>Sign in or register</h2>
+<section class="panel" id="guest"><h2>Sign in</h2><p>Your email address is your Brainy Elephant learner login. New tester? Enter your email, choose your own password, then select <strong>Create account</strong>.</p>
 <form id="email-form"><label for="email">Email address</label><input id="email" name="email" type="email" autocomplete="email" required maxlength="254">
-<label for="password">Password (at least 8 characters)</label><input id="password" name="password" type="password" autocomplete="current-password" required minlength="8">
+<label for="password">Password (at least 8 characters)</label><input id="password" name="password" type="password" autocomplete="current-password" required minlength="8"><p><small>You choose your own password. Brainy Elephant does not need to know it.</small></p>
 <button id="signin" type="submit">Sign in</button><button class="secondary" id="signup" type="button">Create account</button></form>
-<p><small>We will use your email only for learner authentication and account notices. A privacy policy and account deletion process must be completed before public launch.</small></p>
+<p><small>Your email identifies your learner account and allows your progress and questionnaire results to stay attached to you. Confirm your email using the message sent after registration.</small></p>
 </section>
 <section class="panel" id="member" hidden><h2>Account overview</h2>
 <p id="email-display"></p>
-<label for="certificate-name">Name to display on a future certificate</label><input id="certificate-name" type="text" maxlength="160" autocomplete="name">
+<label for="certificate-name">Display name (optional)</label><input id="certificate-name" type="text" maxlength="160" autocomplete="name">
 <div><button id="save-name" type="button">Save name</button><button id="logout" type="button" class="secondary">Sign out</button></div>
 <h3>Saved course progress</h3><div id="progress-summary"></div><ul id="progress-list"></ul><p><a href="/esol/">Continue learning</a> · <a href="/esol/final-test/">Practice questionnaire</a></p>
 <p><small>This records lesson completion only. It does not prove ESOL proficiency or issue a certificate. Assessments and payment subscriptions are not active here.</small></p>
@@ -60,7 +60,7 @@ async function refresh(){
 byId("email-form").addEventListener("submit",async e=>{e.preventDefault();const email=byId("email").value.trim(),password=byId("password").value;
  message("Checking sign-in…");const {error}=await db.auth.signInWithPassword({email,password});if(error){message(error.message,true);return}message("Signed in.");await refresh()});
 byId("signup").addEventListener("click",async()=>{const email=byId("email").value.trim(),password=byId("password").value;if(!email||password.length<8){message("Please provide an email and a password of at least 8 characters.",true);return}
- message("Submitting registration…");const {error}=await db.auth.signUp({email,password,options:{emailRedirectTo:ESOL_ACCOUNT_REDIRECT}});message(error?error.message:"Registration requested. Check your email for a confirmation link. If it does not return to Brainy Elephant, the Auth redirect configuration still needs updating.",!!error)});
+ message("Submitting registration…");const {error}=await db.auth.signUp({email,password,options:{emailRedirectTo:ESOL_ACCOUNT_REDIRECT}});message(error?error.message:"Account created. Check your email and select the confirmation link, then return here and sign in.",!!error)});
 byId("save-name").addEventListener("click",async()=>{
  if(!currentUser)return;
  const certificate_name=byId("certificate-name").value.trim();
@@ -69,7 +69,7 @@ byId("save-name").addEventListener("click",async()=>{
  const result=existing
   ? await db.from("be_esol_learners").update({certificate_name}).eq("user_id",currentUser.id)
   : await db.from("be_esol_learners").insert({user_id:currentUser.id,certificate_name});
- message(result.error?"Could not save name: "+result.error.message:"Name saved.",!!result.error);
+ message(result.error?"Could not save name: "+result.error.message:"Display name saved.",!!result.error);
 });
 byId("logout").addEventListener("click",async()=>{const {error}=await db.auth.signOut();message(error?error.message:"Signed out.",!!error);await refresh()});
 db.auth.onAuthStateChange(()=>{setTimeout(()=>refresh().catch(e=>message(e.message,true)),0)});
