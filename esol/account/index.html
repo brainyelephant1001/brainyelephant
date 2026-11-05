@@ -29,7 +29,7 @@ li{padding:5px 0}button:focus-visible,a:focus-visible,input:focus-visible{outlin
 <p id="email-display"></p>
 <label for="certificate-name">Display name (optional)</label><input id="certificate-name" type="text" maxlength="160" autocomplete="name">
 <div><button id="save-name" type="button">Save name</button><button id="logout" type="button" class="secondary">Sign out</button></div>
-<h3>Saved course progress</h3><div id="progress-summary"></div><ul id="progress-list"></ul><p><a href="/esol/">Continue learning</a> · <a href="/esol/final-test/">Practice questionnaire</a></p>
+<h3>Saved course progress</h3><div id="progress-summary"></div><ul id="progress-list"></ul><h3>Practice questionnaire results</h3><div id="assessment-results">No saved attempts yet.</div><p><a href="/esol/">Continue learning</a> · <a href="/esol/final-test/">Practice questionnaire</a></p>
 <p><small>This records lesson completion only. It does not prove ESOL proficiency or issue a certificate. Assessments and payment subscriptions are not active here.</small></p>
 </section>
 <p id="message" role="status" aria-live="polite"></p>
@@ -46,13 +46,14 @@ async function refresh(){
  currentUser=user||null;byId("guest").hidden=!!currentUser;byId("member").hidden=!currentUser;
  if(!currentUser)return;
  byId("email-display").textContent="Signed in: "+(currentUser.email||"");
- const [profile,progress]=await Promise.all([
+ const [profile,progress,assessments]=await Promise.all([
  db.from("be_esol_learners").select("certificate_name").eq("user_id",currentUser.id).maybeSingle(),
- db.from("be_esol_progress").select("level_number,lesson_id,completed_at").eq("user_id",currentUser.id).order("level_number").order("lesson_id")
+ db.from("be_esol_progress").select("level_number,lesson_id,completed_at").eq("user_id",currentUser.id).order("level_number").order("lesson_id"),
+ db.from("be_esol_assessment_attempts").select("raw_score,maximum_score,completed_at").eq("user_id",currentUser.id).eq("assessment_code","ESOL-FINAL-PRACTICE").order("completed_at",{ascending:false}).limit(10)
  ]);
  if(profile.error)message("Profile could not be loaded: "+profile.error.message,true);
  byId("certificate-name").value=profile.data?.certificate_name||"";
- if(progress.error){message("Progress could not be loaded: "+progress.error.message,true);return}
+ if(progress.error){message("Progress could not be loaded: "+progress.error.message,true);return} if(assessments.error){message("Questionnaire results could not be loaded: "+assessments.error.message,true)} else {const a=assessments.data||[];byId("assessment-results").textContent=a.length?("Attempts: "+a.length+" · Best score: "+Math.max(...a.map(x=>x.raw_score))+" / "+a[0].maximum_score+" · Latest: "+a[0].raw_score+" / "+a[0].maximum_score):"No saved attempts yet."}
  const list=byId("progress-list");list.replaceChildren();const rows=progress.data||[],counts=[1,2,3,4,5].map(level=>({level,count:new Set(rows.filter(p=>p.level_number===level).map(p=>p.lesson_id)).size}));byId("progress-summary").innerHTML=counts.map(x=>'<p><b>'+(['','Entry Level 1','Entry Level 2','Entry Level 3','Level 1','Level 2'][x.level])+':</b> '+x.count+' / 210 lessons completed</p>').join('');
  if(!rows.length){const li=document.createElement("li");li.textContent="No completed lessons synced yet.";list.append(li);return}
  const recent=[...rows].sort((a,b)=>String(b.completed_at).localeCompare(String(a.completed_at))).slice(0,10);for(const p of recent){const li=document.createElement("li");li.textContent="Level "+p.level_number+" — "+p.lesson_id;list.append(li)}
