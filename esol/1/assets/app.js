@@ -18,6 +18,14 @@ if(x.section==='Reading'){
  if(!qs.length&&x.question&&/\?$/.test(String(x.question).trim()))qs.push({q:String(x.question).trim(),hint:text});
 }
 if(!qs.length&&x.section==='Reading'){
+ const coffee=(text.match(/Coffee morning:\s*([^\n]+?)\s+([0-9]{1,2}(?::[0-9]{2})?\s*(?:am|pm)?)/i)||[]),advice=(text.match(/Advice desk:\s*([^\n]+?)\s+([0-9]{1,2}(?::[0-9]{2})?\s*(?:am|pm)?)/i)||[]),address=(text.match(/Address:\s*([^\n]+)/i)||[])[1],welcome=(text.match(/([^\n.]+)\s+is welcome/i)||[])[1];
+ if(coffee[1])qs.push({q:'What day is the coffee morning?',hint:text});
+ if(coffee[2])qs.push({q:'What time is the coffee morning?',hint:text});
+ if(advice[1])qs.push({q:'What day is the advice desk?',hint:text});
+ if(address)qs.push({q:'What is the address?',hint:text});
+ if(welcome)qs.push({q:'Who is welcome?',hint:text});
+}
+if(!qs.length&&x.section==='Reading'){
  const lines=text.split(/\n+/).map(s=>s.trim()).filter(Boolean),events=[];
  for(const line of lines){const m=line.match(/^([0-9]{1,2}(?::[0-9]{2})?)\s+(.+)$/);if(m)events.push({time:m[1],activity:m[2]})}
  const tomorrow=(text.match(/Tomorrow:\s*([^\n]+)/i)||[])[1];
@@ -30,9 +38,9 @@ if(!qs.length&&x.section==='Reading'){
  }
 }
 if(!qs.length){qs=p.filter(isQuestion).filter(q=>!/what is (?:the text|this) (?:mainly )?about\?/i.test(String(q))).slice(0,5).map(q=>({q:simplify(q),hint:text}));}
-if(!qs.length&&x.question)qs.push({q:String(x.question).trim(),hint:text});
+if(!qs.length&&x.question&&isQuestion(x.question))qs.push({q:String(x.question).trim(),hint:text});
 return qs.slice(0,5)}
-function isQuestion(q){const s=String(q||'').trim();return /\?$/.test(s)||/^(what|where|when|who|why|how|which|is |are |do |does |can |should )/i.test(s)}
+function isQuestion(q){const s=String(q||'').trim();if(!s)return false;if(/^(read|identify|underline|say|look|listen|demonstrate|complete|use|copy|write|practise|practice|discuss|match|circle|highlight|find|explain|choose)\b/i.test(s))return false;if(/\b(supplied by your tutor|criterion|evidence|learner should|candidate should|assessment|main information and one key detail)\b/i.test(s))return false;return /\?$/.test(s)&&/^(what|where|when|who|why|how|which|is |are |do |does |can |should |will |did |has |have )/i.test(s)}
 function simplify(q){return String(q).replace('What is the text mainly about?','What is this about?').replace('Explain or choose what the reader should do next, where relevant.','What should the person do?')}
 function question(x,i){let qs=tasks(x);if(i>=qs.length)return finish(x);let t=qs[i],key=x.lesson_id+'::'+i;A.innerHTML=`<div class="card lesson-screen"><div class="step">QUESTION ${i+1} OF ${qs.length}</div>${t.hint?'<div class="material">'+esc(t.hint).replace(/\n/g,'<br>')+'</div>':''}<h1 class="question">${esc(t.q)}</h1><label class="answerlabel" for="answer">Your answer</label><input id="answer" class="answer" autocomplete="off" value="${esc(ANSWERS[key]||'')}"><div style="display:flex;gap:10px"><button class="big" id="prev" ${i===0?'disabled':''}>BACK</button><button class="primary" id="next">NEXT QUESTION</button></div><div class="adslot">Advertisement</div></div>`;let a=document.getElementById('answer');a.focus();const save=()=>{ANSWERS[key]=a.value};document.getElementById('prev').onclick=()=>{save();if(i>0)question(x,i-1)};document.getElementById('next').onclick=()=>{save();question(x,i+1)};a.onkeydown=e=>{if(e.key==='Enter'){save();question(x,i+1)}}}
 async function finish(x){A.innerHTML=`<div class="card lesson-screen"><div class="step">FINISH</div><h1>Lesson complete</h1><p class="lead">Well done. You finished this lesson.</p><button class="primary" id="save">FINISH LESSON</button><p id="status"></p><div class="adslot">Advertisement</div></div>`;document.getElementById('save').onclick=async()=>{let b=document.getElementById('save'),s=document.getElementById('status');b.disabled=true;if(!user){s.textContent='Sign in to save your progress.';return}try{await completeEsolLesson(LEVEL,x.lesson_id);completed.add(String(x.lesson_id));s.textContent='Saved.';setTimeout(()=>section(x.stage,x.section),500)}catch(e){b.disabled=false;s.textContent=e.message}}}
