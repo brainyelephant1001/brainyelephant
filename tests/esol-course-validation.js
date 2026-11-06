@@ -23,6 +23,7 @@ for(let level=1;level<=5;level++){
   if(x.stage>=3){
    if(!String(x.question||'').trim())errors.push(x.lesson_id+': missing learner question');
    if(tutor.test(String(x.question||'')))errors.push(x.lesson_id+': tutor/instruction wording in learner question');
+   if(/\[[^\]]+\]/.test(String(x.learner_material||'')))errors.push(x.lesson_id+': placeholder text in learner material');
    if(Array.isArray(x.choices)&&x.choices.length && !x.choices.includes(x.answer))errors.push(x.lesson_id+': answer not present in choices');
   }
  }
