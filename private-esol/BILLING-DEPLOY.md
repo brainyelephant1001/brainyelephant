@@ -60,3 +60,7 @@ Only completed lesson IDs sync through the original progress API. Practice draft
 ## Verification limits
 
 Mock transport tests verify payment logic without a live charge. Database transaction tests verify reservation/consumption and permissions. Browser tests exercise the real server/test UI using disposable fake authentication/payment/database transport. These do not replace a real sandbox-provider purchase/email-delivery test and do not establish independent educational approval.
+
+## Approved introductory offer
+
+Display exactly: “Six-month introductory offer: £29.99. Standard price after the offer: £49.99.” The offer starts on the actual paid public launch date, not the preview publication date. Before opening payments, publish its calendar closing date and configure the GBP 49.99 standard Price and the switch after six months. Do not call £49.99 a previous selling price. The current live Price remains GBP 29.99 once. Checkout remains closed pending the required credentials, customer policies and provider sandbox verification above.
