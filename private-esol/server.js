@@ -124,6 +124,6 @@ let contents=fs.readFileSync(file);if(path.extname(file)==='.html'){
 return response(res,200,contents,mime[path.extname(file)]);
 }catch(err){console.error('Private ESOL request failed',err.message);return response(res,500,'Temporary server error','text/plain')}
 });
-server.listen(PORT,'0.0.0.0',()=>{console.log('Private ESOL listening on '+PORT);if(sandbox?.ready)sandbox.setup().then(()=>console.log('Sandbox payment setup ready.')).catch(e=>console.error('Sandbox setup needs attention:',String(e.code||e.type||'configuration').replace(/[^a-zA-Z_]/g,'')));});
+server.listen(PORT,'0.0.0.0',()=>{console.log('Private ESOL listening on '+PORT);if(sandbox?.ready)sandbox.setup().then(()=>console.log('Sandbox payment setup ready.')).catch(e=>console.error('Sandbox setup needs attention:',String(e.code||e.type||'configuration').replace(/[^a-zA-Z_]/g,''),String(e.sandboxStage||'').replace(/[^a-zA-Z]/g,''),(e.sandboxPermissions||[]).filter(x=>/^[a-z_]+$/.test(x)).join(',')));});
 
 process.once('SIGTERM',()=>{server.close(()=>process.exit(0));setTimeout(()=>process.exit(1),25000).unref();});
