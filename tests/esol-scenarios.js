@@ -10,6 +10,7 @@ assert.deepEqual(resourceConflicts('My library card is missing. Please bring you
 assert.deepEqual(resourceConflicts('If the reference is missing, ask for help. Otherwise, bring the reference.'),[]);
 let passages=0;
 for(let n=1;n<=5;n++)for(const x of JSON.parse(fs.readFileSync(`esol/${n}/assets/lessons.json`))){
+ assert(!('question' in x||'answer' in x||'choices' in x),'Task answers must have one source of truth');
  const texts=[['source',x.learner_material],...x.tasks.flatMap((t,i)=>[['task '+(i+1)+' source',t.material||''],['task '+(i+1)+' example',t.model||'']])];
  for(const [label,s]of texts){assert.deepEqual(resourceConflicts(s),[],`${x.lesson_id} ${label}: unavailable item requested`);passages++;}
  if(x.topic==='Public information'){
