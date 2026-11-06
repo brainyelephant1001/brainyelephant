@@ -10,6 +10,10 @@ const assert=require('node:assert/strict'),{spawn}=require('node:child_process')
  const course=await fetch(base+'/esol/1/assets/lessons.json',{redirect:'manual'});assert.equal(course.status,303);
  const admin=await fetch(base+'/admin/billing/restore',{method:'POST',redirect:'manual'});assert.equal(admin.status,403);
  const ownerCookie={Cookie:'esol_at=fixture-owner-auth'};
+ const sandboxRedirect=await fetch(base+'/admin/sandbox',{redirect:'manual'});assert.equal(sandboxRedirect.headers.get('location'),'/login?next=/admin/sandbox');
+ const sandboxWrongOwner=await fetch(base+'/admin/sandbox',{headers:{Cookie:'esol_at=fixture-other-auth'}});assert.equal(sandboxWrongOwner.status,403);
+ const sandboxForged=await fetch(base+'/admin/sandbox/checkout',{method:'POST',headers:{...ownerCookie,Origin:'https://forged.invalid'}});assert.equal(sandboxForged.status,403);
+ const sandboxOwner=await fetch(base+'/admin/sandbox',{headers:ownerCookie});assert.equal(sandboxOwner.status,200);assert((await sandboxOwner.text()).includes('SANDBOX'));
  const setupRedirect=await fetch(base+'/admin/setup',{redirect:'manual'});assert.equal(setupRedirect.headers.get('location'),'/login?next=/admin/setup');
  const signInPage=await fetch(base+'/login?next=/admin/setup');assert((await signInPage.text()).includes('name="return_to" value="/admin/setup"'));
  const ownerLogin=await fetch(base+'/login',{method:'POST',redirect:'manual',body:new URLSearchParams({email:'owner@example.invalid',password:'Fixture-password-123',return_to:'/admin/setup'})});assert.equal(ownerLogin.headers.get('location'),'/admin/setup');

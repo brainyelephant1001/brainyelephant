@@ -70,3 +70,7 @@ Modern Supabase secret keys are supplied only as the apikey header. The server a
 ## Explicit launch gate
 
 ESOL_CHECKOUT_OPEN defaults to false. Credential presence does not open checkout. Only set it to true after approval of seller policies, published six-month offer dates, confirmed Auth redirect/email delivery, sandbox payment/webhook/fulfilment/refund verification and enabling the correct live webhook. Terms and privacy are served locally at /terms and /privacy. Owner-only /admin/setup performs read-only Stripe Price and database permission checks and never displays key values.
+
+## Isolated provider sandbox
+
+ESOL_STRIPE_SANDBOX_KEY must have an rk_test_ or sk_test_ prefix. It is never substituted for STRIPE_RESTRICTED_KEY. Owner-only /admin/sandbox uses the existing billing and final-test engine with REST/RPC calls rewritten exclusively to be_esol_sandbox_ records. Every sandbox table and function is service-role only. Startup creates a GBP 29.99 test product/Price and signed webhook once; only its signing secret is stored in the server-only sandbox config table, never in HTML or logs. /admin/sandbox/webhook verifies test signatures before fulfilment. Test refunds verify that the original Checkout Session is not live before requesting a refund. The provider confirmation, rehearsal and PDF download must be exercised before launch; mocked tests do not establish provider success.
