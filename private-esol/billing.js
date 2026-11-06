@@ -27,6 +27,7 @@ function createBilling({env=process.env,fetcher=fetch,stripe:injected,clock=()=>
  }
  async function reviewCases(){const [purchases,blocks]=await Promise.all([db('be_esol_purchases'),db('be_esol_payment_blocks?active=eq.true')]);return purchases.filter(p=>p.status!=='paid'||blocks.some(b=>b.payment_intent_id===p.payment_intent_id));}
  async function restoreAfterReview(purchaseId){const p=(await rows('be_esol_purchases','checkout_session_id',purchaseId))[0];if(!p)throw Error('No purchase');await db('be_esol_payment_blocks?payment_intent_id=eq.'+encodeURIComponent(p.payment_intent_id),'PATCH',{active:false});await db('be_esol_purchases?checkout_session_id=eq.'+encodeURIComponent(purchaseId),'PATCH',{status:'paid'});}
- return {enabled,configured,origin,checkout,portal,hasAccess,webhook,purchases,attempts,db,rows,reviewCases,restoreAfterReview};
+ async function verifySetup(){if(!configured)throw Error('Configuration incomplete');await checkPrice();await db('be_esol_purchases?select=checkout_session_id&limit=0');return true;}
+ return {enabled,configured,origin,checkout,portal,hasAccess,webhook,purchases,attempts,db,rows,reviewCases,restoreAfterReview,verifySetup};
 }
 module.exports={createBilling,EVENTS};

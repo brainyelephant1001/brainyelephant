@@ -66,3 +66,7 @@ Mock transport tests verify payment logic without a live charge. Database transa
 Display exactly: “Six-month introductory offer: £29.99. Standard price after the offer: £49.99.” The offer starts on the actual paid public launch date, not the preview publication date. Before opening payments, publish its calendar closing date and configure the GBP 49.99 standard Price and the switch after six months. Do not call £49.99 a previous selling price. The current live Price remains GBP 29.99 once. Checkout remains closed pending the required credentials, customer policies and provider sandbox verification above.
 
 Modern Supabase secret keys are supplied only as the apikey header. The server also accepts SUPABASE_SERVICE_ROLE_KEY for existing legacy deployments; never put either server key in browser code.
+
+## Explicit launch gate
+
+ESOL_CHECKOUT_OPEN defaults to false. Credential presence does not open checkout. Only set it to true after approval of seller policies, published six-month offer dates, confirmed Auth redirect/email delivery, sandbox payment/webhook/fulfilment/refund verification and enabling the correct live webhook. Terms and privacy are served locally at /terms and /privacy. Owner-only /admin/setup performs read-only Stripe Price and database permission checks and never displays key values.
