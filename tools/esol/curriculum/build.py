@@ -130,6 +130,14 @@ def reading(c,n,s,i):
   detail=(f"The session is on {transfer['short_date']} at {transfer['time']}." if s==2 else f"Alex should bring a {transfer['item']}." if s==6 else f"It is on {transfer['date']} at {transfer['time']}.")
   tasks[-1]['model']='Example answer: '+main+' '+detail
  tasks[-1]['material']=base_material(transfer,n,s)+'\n\nPRACTICE GLOSSARY\n'+'\n'.join(k+' — '+v for k,v in glossary(transfer))
+ if n==1 and s==1:
+  tasks[-2]['prompt']='Copy the name of the place. Keep its capital letters.'
+  tasks[-2]['model']='Example answer: '+c['place']
+  tasks[-1]['prompt']="Copy the contact person's name. Keep the capital letter."
+  tasks[-1]['model']='Example answer: '+c['name']
+  tasks[-1]['material']=text
+  tasks[-1]['title']=c['topic']
+  tasks[-1].pop('introduction',None)
  if n==2 and s==3: tasks[-1]['visual']=visuals(transfer,(i+3)%10)
  return text,tasks,visual
 

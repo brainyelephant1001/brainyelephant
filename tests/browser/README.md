@@ -7,7 +7,7 @@
 - `npm run test:browser`: both groups, with a local preview server started automatically.
 - `npm run test:browser:report`: open the last HTML report.
 
-The full suite has 35 stage sweeps (30 lessons each) plus 26 desktop/mobile learner-flow tests. It covers the current task interactions, correct/wrong/blank answers, self-review gates, next-lesson navigation, saved completion, saved writing drafts, search, horizontal overflow, audio playback and speed, transcripts, all 15 reading/listening/language assessment variants, assessment resume/scoring/history, and backup download/import/rejection. It checks page JavaScript errors during the sweep.
+The full suite has 35 stage sweeps (30 lessons each) plus 26 desktop/mobile learner-flow tests. It covers the current task interactions, correct/wrong/blank answers, completion without mandatory reflection checkboxes, next-lesson navigation, saved completion, saved writing drafts, search, horizontal overflow, audio playback and speed, transcripts, all 15 reading/listening/language assessment variants, assessment resume/scoring/history, and backup download/import/rejection. It checks page JavaScript errors during the sweep.
 
 GitHub Actions runs the suite on matching pushes and pull requests, and supports manual runs. Failure evidence is retained as screenshots, videos, traces and an HTML/JSON report for 14 days. Retries are disabled so a flaky failure is reported instead of silently hidden. Four isolated browser workers run concurrently. Actions fail after 10 seconds if a control cannot be found, rather than waiting for the full test timeout. There is a 20-minute test-suite limit. Actual timing depends on the runner and is not guaranteed to be a few minutes.
 

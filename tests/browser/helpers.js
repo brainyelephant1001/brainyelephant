@@ -13,9 +13,7 @@ async function solve(page,x,{gates=false}={}){
   }else if(t.kind==='form'){for(const f of t.fields){const el=page.locator('#form-'+f.id);if(f.options)await el.selectOption(f.example);else await el.fill(f.example);}await page.locator('#model').click();await expect(page.locator('#feedback')).toContainText(t.model);}else{await page.getByRole('textbox',{name:'Your response',exact:true}).fill(`Automated practice response for ${x.lesson_id}, task ${i+1}.`);await page.locator('#model').click();await expect(page.locator('#feedback')).toHaveText(t.model);}
   await page.locator('#next').click();
  }
- await expect(page.getByRole('heading',{name:'Self-review',exact:true})).toBeVisible();
- if(gates){await page.locator('#finish').click();await expect(page.locator('#finish-status')).toContainText('Complete each task');}
- for(const box of await page.getByRole('checkbox').all())await box.check();
+ await expect(page.getByRole('heading',{name:'Ready to finish',exact:true})).toBeVisible();
  await page.locator('#finish').click();await expect(page.getByRole('heading',{name:'Lesson finished',exact:true})).toBeVisible();
 }
 function watchErrors(page){const errors=[];page.on('pageerror',e=>errors.push(e.message));return errors;}
