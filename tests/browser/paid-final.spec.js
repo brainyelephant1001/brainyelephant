@@ -11,7 +11,7 @@ test('paid all-five-level final: resume, server score, PDF, ownership and no fre
  const data=await (await context.request.get(attemptUrl+'/data')).json();expect(data.questions).toHaveLength(130);expect(data.questions.every(q=>!('answer' in q)&&!('model' in q))).toBe(true);
  const variants=[0,1,2].map(questionSet);const keys=data.questions.map(q=>variants.flat().find(k=>k.level===q.level&&k.lesson_id===q.lesson_id&&k.prompt===q.prompt));
  for(let i=0;i<data.questions.length;i++){
-  const q=data.questions[i];await expect(page.locator('legend')).toHaveText(q.prompt);
+  const q=data.questions[i];await expect(page.getByText('Question '+(i+1)+' of 130',{exact:true})).toBeVisible();await expect(page.locator('legend')).toHaveText(q.prompt);
   if(q.kind==='choice')await page.getByRole('radio',{name:keys[i].answer,exact:true}).check();else await page.getByRole('textbox',{name:'Your response / speaking practice notes',exact:true}).fill('Practice response supplied. This is not a proficiency grade.');
   await page.getByRole('button',{name:i===129?'Review and finish':'Save and next',exact:true}).click();
   if(i===0){await page.reload();await expect(page.locator('legend')).toHaveText(data.questions[1].prompt);}
