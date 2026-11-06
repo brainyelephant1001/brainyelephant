@@ -9,7 +9,7 @@ module.exports=defineConfig({
  use:{actionTimeout:10000,navigationTimeout:15000,baseURL:external||'http://127.0.0.1:4180',trace:'retain-on-failure',screenshot:'only-on-failure',video:'retain-on-failure',launchOptions},
  projects:[
   {name:'desktop',testMatch:/.*\.spec\.js/,use:{...devices['Desktop Chrome']}},
-  {name:'mobile',testMatch:/flows\.spec\.js/,use:{...devices['Pixel 7']}},
+  {name:'mobile',testMatch:/(flows|paid-final)\.spec\.js/,use:{...devices['Pixel 7']}},
  ],
  webServer:external?undefined:{command:'node tools/esol/preview.js --port 4180',url:'http://127.0.0.1:4180/esol/',reuseExistingServer:false,timeout:30000},
 });

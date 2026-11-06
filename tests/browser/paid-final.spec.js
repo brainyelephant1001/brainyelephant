@@ -1,0 +1,26 @@
+const {test,expect}=require('@playwright/test'),{spawn}=require('node:child_process'),path=require('node:path'),fs=require('node:fs');
+const {questionSet}=require('../../private-esol/exams');
+let child,base;
+test.beforeAll(async({},info)=>{base='http://127.0.0.1:'+(4500+info.workerIndex);child=spawn(process.execPath,['private-esol/server.js'],{cwd:path.resolve(__dirname,'../..'),env:{...process.env,NODE_OPTIONS:'--require '+path.resolve(__dirname,'../helpers/paid-preload.js'),PORT:String(4500+info.workerIndex),NODE_ENV:'development',ESOL_PUBLIC_CUSTOMERS:'true',ESOL_TESTER_EMAILS:'',ESOL_CUSTOMER_ORIGIN:'https://fixture.example.invalid',STRIPE_RESTRICTED_KEY:'fixture-not-a-key',STRIPE_WEBHOOK_SECRET:'fixture',ESOL_STRIPE_PRICE_ID:'price_fixture',SUPABASE_PUBLISHABLE_KEY:'fixture',SUPABASE_SERVICE_ROLE_KEY:'fixture',ESOL_TERMS_URL:'https://fixture.example.invalid/terms',ESOL_PRIVACY_URL:'https://fixture.example.invalid/privacy',ESOL_SUPPORT_EMAIL:'support@example.invalid'}});await new Promise((resolve,reject)=>{child.stdout.once('data',resolve);child.once('error',reject);child.once('exit',c=>reject(Error('Paid fixture exited '+c)));});});
+test.afterAll(async()=>{if(child)child.kill();});
+async function login(context,token='fixture-owner-token'){await context.addCookies([{name:'esol_at',value:token,url:base}]);}
+test('paid all-five-level final: resume, server score, PDF, ownership and no free retake',async({page,context})=>{
+ test.setTimeout(240000);await login(context);await page.goto(base+'/exam');await page.getByLabel('Name for your results report').fill('Sample Learner');await page.getByRole('button',{name:'Start my paid final test',exact:true}).click();await expect(page.locator('legend')).toBeVisible();const attemptUrl=page.url();const qs=questionSet(0);
+ // The fixture uses the real random variant; get only public prompts from the HTTP API,
+ // then match keys in the local test bank. No answer is fetched by the learner client.
+ const data=await (await context.request.get(attemptUrl+'/data')).json();expect(data.questions).toHaveLength(130);expect(data.questions.every(q=>!('answer' in q)&&!('model' in q))).toBe(true);
+ const variants=[0,1,2].map(questionSet);const keys=data.questions.map(q=>variants.flat().find(k=>k.level===q.level&&k.lesson_id===q.lesson_id&&k.prompt===q.prompt));
+ for(let i=0;i<data.questions.length;i++){
+  const q=data.questions[i];await expect(page.locator('legend')).toHaveText(q.prompt);
+  if(q.kind==='choice')await page.getByRole('radio',{name:keys[i].answer,exact:true}).check();else await page.getByRole('textbox',{name:'Your response / speaking practice notes',exact:true}).fill('Practice response supplied. This is not a proficiency grade.');
+  await page.getByRole('button',{name:i===129?'Review and finish':'Save and next',exact:true}).click();
+  if(i===0){await page.reload();await expect(page.locator('legend')).toHaveText(data.questions[1].prompt);}
+ }
+ await expect(page.getByRole('heading',{name:'Finish this paid test?',exact:true})).toBeVisible();await expect(page.locator('#paid-test')).toContainText('another £29.99 payment');await page.getByRole('button',{name:'Finish test and get my report',exact:true}).click();await expect(page.getByRole('heading',{name:'Final test completed',exact:true})).toBeVisible();await expect(page.locator('#paid-test')).toContainText('120 / 120');
+ const downloadPromise=page.waitForEvent('download');await page.getByRole('link',{name:'Download results report (PDF)',exact:true}).click();const download=await downloadPromise;expect(download.suggestedFilename()).toMatch(/\.pdf$/);expect(fs.readFileSync(await download.path()).subarray(0,4).toString()).toBe('%PDF');
+ await page.reload();await expect(page.getByRole('heading',{name:'Final test completed',exact:true})).toBeVisible();const retake=await context.request.post(base+'/exam/start',{form:{learner_name:'Another run'}});expect(retake.status()).toBe(402);const course=await context.request.get(base+'/esol/',{maxRedirects:0});expect(course.status()).toBe(303);expect(course.headers().location).toBe('/pricing');
+ await login(context,'fixture-other-token');const stolen=await context.request.get(attemptUrl+'/report.pdf');expect(stolen.status()).toBe(404);
+});
+test('finishing early is explicit and blank checked answers score zero',async({page,context})=>{
+ await login(context);await page.goto(base+'/exam');await page.getByLabel('Name for your results report').fill('Early Finish');await page.getByRole('button',{name:'Start my paid final test',exact:true}).click();await expect(page.locator('legend')).toBeVisible();await page.getByRole('button',{name:'Finish test...',exact:true}).click();await expect(page.locator('#paid-test')).toContainText('0 of 130');await page.getByRole('button',{name:'Keep working',exact:true}).click();await expect(page.locator('legend')).toBeVisible();await page.getByRole('button',{name:'Finish test...',exact:true}).click();await page.getByRole('button',{name:'Finish test and get my report',exact:true}).click();await expect(page.locator('#paid-test')).toContainText('0 / 120');await expect(page.locator('#paid-test')).toContainText('Unanswered checked questions: 120');
+});

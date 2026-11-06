@@ -1,0 +1,29 @@
+'use strict';
+const fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto'),C=require('../esol/core');
+function fail(code,status=400){const e=Error(code);e.code=code;e.status=status;throw e;}
+const bankFiles=[1,2,3,4,5].map(n=>fs.readFileSync(path.join(__dirname,`../esol/${n}/assets/lessons.json`),'utf8'));
+const banks=bankFiles.map(s=>JSON.parse(s)),bankVersion='BE-FINAL-ALL5-'+crypto.createHash('sha256').update(bankFiles.join('\n')).digest('hex').slice(0,16);
+function questionSet(variant=0){return banks.flatMap((bank,i)=>C.assessment(bank,variant).map(q=>({...q,level:i+1,level_name:C.LEVELS[i]})));}
+function safeQuestion(q){const {kind,prompt,options,component,material,visual,lesson_id,audio_id,level,level_name}=q;return {kind,prompt,options,component,material,visual,lesson_id,audio_id,level,level_name};}
+function cleanAnswers(questions,answers){if(!answers||typeof answers!=='object'||Array.isArray(answers))fail('invalid_answers');const out={};for(const [k,v]of Object.entries(answers)){if(!/^\d{1,3}$/.test(k)||Number(k)>=questions.length||typeof v!=='string'||v.length>10000)fail('invalid_answer');const q=questions[Number(k)];if(q.kind==='choice'&&v&&!q.options.includes(v))fail('invalid_choice');out[k]=v;}return out;}
+function scoreReport(attempt,clock=()=>Date.now()){
+ const answers=cleanAnswers(attempt.questions,attempt.answers);
+ const unanswered=attempt.questions.filter((q,i)=>q.kind==='choice'&&!String(answers[i]||'').trim()).length;
+ const productiveAnswered=attempt.questions.filter((q,i)=>q.kind==='response'&&String(answers[i]||'').trim()).length;
+ const levels=[1,2,3,4,5].map(n=>{const r={level:n,name:C.LEVELS[n-1],components:[],correct:0,total:0};for(const component of ['Reading','Listening','Language']){let correct=0,total=0;attempt.questions.forEach((q,i)=>{if(q.level===n&&q.kind==='choice'&&q.component===component){total++;if(answers[i]===q.answer)correct++;}});r.components.push({name:component,correct,total});r.correct+=correct;r.total+=total;}return r;});
+ const correct=levels.reduce((v,l)=>v+l.correct,0),total=levels.reduce((v,l)=>v+l.total,0);
+ return {report_id:'BE-'+attempt.attempt_id.toUpperCase(),learner_name:attempt.learner_name,bank_version:attempt.bank_version,completed_at:new Date(clock()).toISOString(),scope:'Final practice test across all five levels',correct,total,percentage:Math.round(correct*100/total),unanswered,productive_answered:productiveAnswered,productive_total:attempt.questions.filter(q=>q.kind==='response').length,levels,productive_status:'Writing and speaking responses were recorded for practice. They are not included in the checked score and have not been assessed for proficiency.',disclaimer:'Brainy Elephant independent practice results. This report is not an accredited certificate or recognised qualification. The name is supplied by the learner.'};
+}
+function createExams({billing,clock=()=>Date.now(),variant=()=>crypto.randomInt(0,3)}={}){
+ async function own(user,attemptId){if(!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(attemptId))fail('not_found',404);const a=(await billing.db('be_esol_paid_attempts?attempt_id=eq.'+encodeURIComponent(attemptId)+'&user_id=eq.'+encodeURIComponent(user.id)))[0];if(!a)fail('not_found',404);return a;}
+ async function usable(a){const p=(await billing.rows('be_esol_purchases','checkout_session_id',a.purchase_id))[0];if(!p||p.status!=='paid')fail('payment_unavailable',403);const block=(await billing.rows('be_esol_payment_blocks','payment_intent_id',p.payment_intent_id))[0];if(block?.active)fail('payment_unavailable',403);}
+ function rpcResult(r){if(r?.error)fail(r.error,r.error==='payment_required'?402:r.error==='not_found'?404:409);return r;}
+ async function start(user,name){if(!billing.configured)fail('enrolment_closed',503);name=String(name||'').replace(/[\u0000-\u001f]/g,' ').replace(/\s+/g,' ').trim();if(name.length<2||name.length>160)fail('report_name_required');return rpcResult(await billing.db('rpc/be_esol_start_final','POST',{p_user:user.id,p_name:name,p_questions:questionSet(variant()),p_version:bankVersion}));}
+ async function load(user,id){const a=await own(user,id);if(a.status==='completed')return {attempt_id:a.attempt_id,status:a.status,report:a.report};await usable(a);return {attempt_id:a.attempt_id,status:a.status,learner_name:a.learner_name,questions:a.questions.map(safeQuestion),answers:a.answers};}
+ async function save(user,id,answers){const a=await own(user,id);if(a.status==='completed')fail('completed',409);await usable(a);return rpcResult(await billing.db('rpc/be_esol_save_final','POST',{p_user:user.id,p_attempt:id,p_answers:cleanAnswers(a.questions,answers)}));}
+ async function finish(user,id){const a=await own(user,id);if(a.status==='completed')return a.report;await usable(a);const report=scoreReport(a,clock);const done=rpcResult(await billing.db('rpc/be_esol_finish_final','POST',{p_user:user.id,p_attempt:id,p_revision:a.answer_revision,p_report:report}));return done.report;}
+ async function report(user,id){const a=await own(user,id);if(a.status!=='completed'||!a.report)fail('test_not_complete',409);return a.report;}
+ async function dashboard(user){const paid=await billing.purchases(user),attempts=await billing.attempts(user),assigned=new Set(attempts.map(a=>a.purchase_id));return {available:paid.filter(p=>p.status==='paid'&&!assigned.has(p.checkout_session_id)).length,active:attempts.filter(a=>a.status==='in_progress'&&paid.some(p=>p.checkout_session_id===a.purchase_id&&p.status==='paid')).map(a=>({attempt_id:a.attempt_id,learner_name:a.learner_name})),completed:attempts.filter(a=>a.status==='completed').map(a=>({attempt_id:a.attempt_id,report_id:a.report?.report_id,completed_at:a.completed_at}))};}
+ return {start,load,save,finish,report,dashboard};
+}
+module.exports={createExams,questionSet,safeQuestion,cleanAnswers,scoreReport,bankVersion};

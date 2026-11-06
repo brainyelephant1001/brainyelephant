@@ -2,7 +2,7 @@
 const assert=require('node:assert/strict'),{spawn}=require('node:child_process');
 (async()=>{const child=spawn(process.execPath,['private-esol/server.js'],{env:{...process.env,PORT:'4199',NODE_ENV:'development',ESOL_PUBLIC_CUSTOMERS:'true',STRIPE_RESTRICTED_KEY:'',ESOL_TESTER_EMAILS:''}});try{
  await new Promise((resolve,reject)=>{child.stdout.once('data',resolve);child.once('error',reject);child.once('exit',c=>reject(Error('Server exited '+c)));});const base='http://127.0.0.1:4199';
- const home=await fetch(base+'/');assert.equal(home.status,200);const text=await home.text();assert(text.includes('£9.99 per month'));assert(text.includes('Paid enrolment is not open yet'));assert(!text.includes('action="/billing/checkout"'));
+ const home=await fetch(base+'/');assert.equal(home.status,200);const text=await home.text();assert(text.includes('£29.99 one-off'));assert(!text.includes('per month'));assert(text.includes('Paid enrolment is not open yet'));assert(!text.includes('action="/billing/checkout"'));
  assert.equal((await fetch(base+'/register')).status,503);assert.equal((await fetch(base+'/billing/webhook',{method:'POST',body:'{}'})).status,503);
  const denied=await fetch(base+'/billing/checkout',{method:'POST',redirect:'manual',headers:{Origin:'https://forged.invalid'}});assert.equal(denied.status,403);
  const login=await fetch(base+'/billing/checkout',{method:'POST',redirect:'manual'});assert.equal(login.status,303);assert.equal(login.headers.get('location'),'/login');
