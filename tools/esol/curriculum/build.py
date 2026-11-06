@@ -122,7 +122,13 @@ def reading(c,n,s,i):
  if n==1 and s==1: tasks[-1]['model']=f"{c['place']}; {c['name']}. Small letters: {c['place'].lower()}; {c['name'].lower()}."
  tasks+=[response('Transfer: use the same strategy on an everyday text you can safely access, or on another source in this activity. Record the new detail and how you checked it. Do not include private information.', 'State the new source or section, the question you answered and the exact detail you checked. If the source does not provide the answer, say that it is not given.')]
  transfer=make_case(n,s,(i+3)%10)
- if n==1: tasks[-1]['prompt']='Read the new text shown above this question. Write its main message and one useful detail.';tasks[-1]['model']='Look at the new heading. Find a useful name, day, time or instruction and check it against the text.'
+ if n==1:
+  tasks[-1]['title']='A different text: '+transfer['topic']
+  tasks[-1]['introduction']='For this last task, read a different text and answer about it.'
+  tasks[-1]['prompt']='What is this text about? Write one useful detail from it.'
+  main=(f"Alex would like to {transfer['goal']}." if s==2 else f"Alex should go to {transfer['place']}." if s==6 else f"There is a {transfer['event']} at {transfer['place']}.")
+  detail=(f"The session is on {transfer['short_date']} at {transfer['time']}." if s==2 else f"Alex should bring a {transfer['item']}." if s==6 else f"It is on {transfer['date']} at {transfer['time']}.")
+  tasks[-1]['model']='Example answer: '+main+' '+detail
  tasks[-1]['material']=base_material(transfer,n,s)+'\n\nPRACTICE GLOSSARY\n'+'\n'.join(k+' — '+v for k,v in glossary(transfer))
  if n==2 and s==3: tasks[-1]['visual']=visuals(transfer,(i+3)%10)
  return text,tasks,visual
