@@ -1,0 +1,47 @@
+name: ESOL Browser Tests
+on:
+  push:
+    branches: [main, esol-integration-testing]
+    paths: ['esol/**', 'tests/**', 'tools/esol/**', 'package*.json', 'playwright.config.js', '.github/workflows/esol-browser-tests.yml']
+  pull_request:
+    branches: [main, esol-integration-testing, esol-complete-working-course]
+    paths: ['esol/**', 'tests/**', 'tools/esol/**', 'package*.json', 'playwright.config.js', '.github/workflows/esol-browser-tests.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: esol-browser-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+jobs:
+  browser:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - name: Install browser and media dependencies
+        run: |
+          npx playwright install --with-deps chromium
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg
+      - name: Structural and functional checks
+        run: npm run test:esol
+      - name: Generate listening files
+        run: python3 tools/esol/build_audio.py
+      - name: Check all listening files
+        run: node tests/esol-audio.js
+      - name: Test desktop, mobile and every lesson
+        run: npm run test:browser
+      - name: Save browser report, screenshots and traces
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: esol-playwright-report
+          path: |
+            playwright-report/
+            test-results/
+          retention-days: 14
