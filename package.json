@@ -6,6 +6,7 @@
     "node": ">=20"
   },
   "scripts": {
-    "start": "node private-esol/server.js"
+    "start": "node private-esol/server.js",
+    "test:esol": "node tests/esol-course-validation.js"
   }
 }
