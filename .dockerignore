@@ -1,0 +1,12 @@
+.git
+node_modules
+.env
+.env.*
+audit
+playwright-report
+test-results
+upload
+export
+esol/audio
+*.zip
+*.tar.gz

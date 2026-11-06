@@ -1,0 +1,28 @@
+'use strict';
+const assert=require('node:assert/strict'),{createBilling}=require('../private-esol/billing');
+(async()=>{
+ const now=1800000000000,records={be_esol_billing_customers:[],be_esol_billing_subscriptions:[],be_esol_entitlements:[],be_esol_billing_events:[],be_esol_billing_risk_events:[]};
+ const keys={be_esol_billing_customers:'user_id',be_esol_billing_subscriptions:'subscription_id',be_esol_entitlements:'user_id',be_esol_billing_events:'event_id',be_esol_billing_risk_events:'event_id'};
+ let subscriptions=[],price={active:true,currency:'gbp',unit_amount:999,recurring:{interval:'month',interval_count:1},livemode:false},checkouts=[];
+ async function fakeFetch(url,opts){const u=new URL(url),table=u.pathname.split('/').pop(),list=records[table];assert(list,'Unknown table');const query=[...u.searchParams].filter(([k])=>k!=='on_conflict');let found=list.filter(row=>query.every(([k,v])=>row[k]===v.replace(/^eq\./,'')));
+ if(opts.method==='POST'){const obj=JSON.parse(opts.body),key=keys[table],existing=list.find(r=>r[key]===obj[key]);if(existing)Object.assign(existing,obj);else list.push(obj);found=[obj];}else if(opts.method==='PATCH'){const obj=JSON.parse(opts.body);found.forEach(r=>Object.assign(r,obj));}
+ return {ok:true,status:200,json:async()=>found};}
+ const stripe={customers:{create:async()=>({id:'cus_own'})},prices:{retrieve:async()=>price},subscriptions:{list:async()=>({data:subscriptions})},checkout:{sessions:{create:async args=>{checkouts.push(args);return {url:'https://checkout.stripe.com/c/pay_fixture'}}}},billingPortal:{configurations:{list:async()=>({data:[{id:'bpc_fixture',business_profile:{headline:'Brainy Elephant ESOL'},features:{subscription_cancel:{enabled:true}}}]})},sessions:{create:async args=>{assert.equal(args.customer,'cus_own');return {url:'https://billing.stripe.com/p/fixture'}}}},charges:{retrieve:async()=>({customer:'cus_own'})},webhooks:{constructEvent:(raw,sig)=>{if(sig!=='valid'){const e=Error('Invalid signature');e.type='StripeSignatureVerificationError';throw e;}return JSON.parse(raw);}}};
+ const env={ESOL_PUBLIC_CUSTOMERS:'true',ESOL_CUSTOMER_ORIGIN:'https://course.example.invalid',STRIPE_RESTRICTED_KEY:'test-fixture-not-a-key',ESOL_STRIPE_PRICE_ID:'price_fixture',STRIPE_WEBHOOK_SECRET:'test-fixture',SUPABASE_SERVICE_ROLE_KEY:'test-db',ESOL_TERMS_URL:'https://course.example.invalid/approved-terms',ESOL_PRIVACY_URL:'https://course.example.invalid/approved-privacy',ESOL_SUPPORT_EMAIL:'support@example.invalid'};
+ const b=createBilling({env,fetcher:fakeFetch,stripe,clock:()=>now}),user={id:'user-own',email:'learner@example.invalid'};assert(b.configured);assert(!createBilling({env:{...env,ESOL_TERMS_URL:''},stripe}).configured,'Missing policies must prevent paid launch');assert(!await b.hasAccess(user));
+ await b.checkout(user);assert.equal(checkouts[0].mode,'subscription');assert.equal(checkouts[0].line_items[0].price,'price_fixture');assert(!('payment_method_types' in checkouts[0]));assert.equal(checkouts[0].client_reference_id,user.id);assert.equal(checkouts[0].customer,'cus_own');assert(!await b.hasAccess(user),'Checkout creation cannot grant access');
+ price={...price,unit_amount:1};await assert.rejects(()=>b.checkout(user),/9.99/);price={...price,unit_amount:999};
+ const sub={id:'sub_fixture',customer:'cus_own',status:'active',items:{data:[{price:{id:'price_fixture'},current_period_end:now/1000+3600}]}};subscriptions=[sub];
+ const event=(eventId,type,object)=>JSON.stringify({id:eventId,type,data:{object}});
+ await assert.rejects(()=>b.webhook(event('evt_bad','checkout.session.completed',{}),'forged'),/signature/);assert(!await b.hasAccess(user));
+ await b.webhook(event('evt_unpaid','checkout.session.completed',{mode:'subscription',payment_status:'unpaid',customer:'cus_own'}),'valid');assert(!await b.hasAccess(user),'Unpaid checkout cannot grant access');
+ await b.webhook(event('evt_paid','checkout.session.async_payment_succeeded',{mode:'subscription',payment_status:'paid',customer:'cus_own'}),'valid');assert(await b.hasAccess(user));
+ await assert.rejects(()=>b.checkout(user),/existing subscription/);assert.equal(await b.portal(user),'https://billing.stripe.com/p/fixture');await assert.rejects(()=>b.portal({id:'other'}),/No subscription/);
+ sub.cancel_at_period_end=true;await b.webhook(event('evt_cancel_later','customer.subscription.updated',sub),'valid');assert(await b.hasAccess(user),'Cancellation at period end retains paid access');
+ sub.status='canceled';await b.webhook(event('evt_cancel','customer.subscription.deleted',sub),'valid');assert(!await b.hasAccess(user),'Expired subscription cannot retain access');
+ sub.status='active';await b.webhook(event('evt_renew','invoice.paid',{customer:'cus_own'}),'valid');assert(await b.hasAccess(user));
+ await b.webhook(event('evt_refund','charge.refunded',{customer:'cus_own',amount:999,amount_refunded:999}),'valid');assert(!await b.hasAccess(user));
+ await b.webhook(event('evt_refund','charge.refunded',{customer:'cus_own',amount:999,amount_refunded:999}),'valid');assert.equal(records.be_esol_billing_risk_events.length,1,'Duplicate webhook must be idempotent');
+ await b.webhook(event('evt_late','invoice.paid',{customer:'cus_own'}),'valid');assert(!await b.hasAccess(user),'Later lifecycle event must not clear a risk hold');
+ console.log('PASS: billing configuration guard, GBP 9.99 price enforcement, customer ownership, checkout isolation, signed/async webhooks, paid-period cancellation, renewal, refund hold and duplicate events. Mock provider/storage only; no live charge performed.');
+})().catch(e=>{console.error(e);process.exitCode=1});

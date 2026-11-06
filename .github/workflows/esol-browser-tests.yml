@@ -15,6 +15,9 @@ concurrency:
 jobs:
   browser:
     runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:v1.65.0-noble
+      options: --ipc=host
     timeout-minutes: 25
     steps:
       - uses: actions/checkout@v4
@@ -23,11 +26,11 @@ jobs:
           node-version: '22'
           cache: npm
       - run: npm ci
-      - name: Install browser and media dependencies
+      - name: Install media tools (browser is in the pinned container)
+        timeout-minutes: 5
         run: |
-          npx playwright install --with-deps chromium
-          sudo apt-get update
-          sudo apt-get install -y ffmpeg
+          apt-get -o Acquire::Retries=1 -o Acquire::http::Timeout=30 -o Acquire::https::Timeout=30 update
+          apt-get -o Acquire::Retries=1 -o Acquire::http::Timeout=30 -o Acquire::https::Timeout=30 install -y --no-install-recommends ffmpeg python3
       - name: Structural and functional checks
         run: npm run test:esol
       - name: Generate listening files
