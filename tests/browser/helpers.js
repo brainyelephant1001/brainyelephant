@@ -6,11 +6,11 @@ async function openLesson(page,x){await page.getByLabel('Skill',{exact:true}).se
 async function solve(page,x,{gates=false}={}){
  for(const [i,t]of x.tasks.entries()){
   await expect(page.locator('legend')).toHaveText(t.prompt);
-  if(gates){await page.locator('#next').click();await expect(page.locator('#feedback')).toContainText(t.kind==='choice'?'Check your answer':'Add your response');}
+  if(gates){await page.locator('#next').click();await expect(page.locator('#feedback')).toContainText(t.kind==='choice'?'Check your answer':t.kind==='form'?'Complete:':'Add your response');}
   if(t.kind==='choice'){
    if(gates){const wrong=t.options.find(v=>v!==t.answer);await page.getByRole('radio',{name:wrong,exact:true}).check();await page.locator('#check').click();await expect(page.locator('#feedback')).toContainText('Try again.');}
    await page.getByRole('radio',{name:t.answer,exact:true}).check();await page.locator('#check').click();await expect(page.locator('#feedback')).toContainText('Correct.');
-  }else{await page.getByRole('textbox',{name:'Your response',exact:true}).fill(`Automated practice response for ${x.lesson_id}, task ${i+1}.`);await page.locator('#model').click();await expect(page.locator('#feedback')).toHaveText(t.model);}
+  }else if(t.kind==='form'){for(const f of t.fields){const el=page.locator('#form-'+f.id);if(f.options)await el.selectOption(f.example);else await el.fill(f.example);}await page.locator('#model').click();await expect(page.locator('#feedback')).toContainText(t.model);}else{await page.getByRole('textbox',{name:'Your response',exact:true}).fill(`Automated practice response for ${x.lesson_id}, task ${i+1}.`);await page.locator('#model').click();await expect(page.locator('#feedback')).toHaveText(t.model);}
   await page.locator('#next').click();
  }
  await expect(page.getByRole('heading',{name:'Self-review',exact:true})).toBeVisible();
