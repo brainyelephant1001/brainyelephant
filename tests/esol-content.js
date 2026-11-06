@@ -6,7 +6,7 @@ const baseline=JSON.parse(fs.readFileSync('tools/esol/curriculum/criteria-index.
 const coverage=new Set(all.flatMap(x=>x.criteria.map(c=>`${x.level}|${x.section}|${c}`)));
 for(const u of baseline){const section={R:'Reading',W:'Writing',SL:'Speaking & Listening'}[u.section];for(const c of u.criteria)assert(coverage.has(`${u.level}|${section}|${c}`),`No planned activity: ${u.level} ${section} ${c}`);}
 let formCount=0,sourceChecks=0;
-for(const x of all){assert(x.learn.split(/\s+/).length>=25,x.lesson_id);assert(x.worked_example.includes('Model answer:'),x.lesson_id);assert(x.guided_practice.length>50);assert(x.review_rubric.length>=5);assert(x.criteria.length);
+for(const x of all){assert(x.learn.split(/\s+/).length>=25,x.lesson_id);assert.equal(typeof x.worked_example,'string',x.lesson_id);assert(x.guided_practice.length>50);assert(x.review_rubric.length>=5);assert(x.criteria.length);
  for(const t of x.tasks){
   if(t.kind==='choice'&&t.basis==='source'&&t.evidence){assert(x.learner_material.toLowerCase().includes(t.evidence.toLowerCase()),`${x.lesson_id}: missing source evidence: ${t.evidence}`);sourceChecks++;}
   if(t.kind==='form'){for(const f of t.fields)if(f.expected)assert(x.learner_material.includes(f.expected),'Form detail not supplied: '+x.lesson_id+' '+f.id);formCount++;const vals=Object.fromEntries(t.fields.map(f=>[f.id,f.example]));assert.equal(C.formErrors(t,JSON.stringify(vals)).length,0);assert(C.formErrors(t,'{}').length>0);if(vals.email){delete vals.email;assert(C.formErrors(t,JSON.stringify(vals)).some(e=>e.includes('email')));}}

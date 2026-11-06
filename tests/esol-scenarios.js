@@ -24,3 +24,6 @@ for(let n=1;n<=5;n++)for(const x of JSON.parse(fs.readFileSync(`esol/${n}/assets
  }
 }
 console.log(`PASS: ${passages} source/example passages checked for missing-resource contradictions across all five levels; Entry 1 planning/editing instructions and library transcript consistency checked.`);
+
+for(let level=1;level<=5;level++){const bank=require(`../esol/${level}/assets/lessons.json`);for(const lesson of bank){if(lesson.worked_example){require("node:assert/strict").ok(!lesson.worked_example.includes(lesson.tasks[0].prompt),lesson.lesson_id+": introductory example repeats the first question");require("node:assert/strict").ok(!lesson.worked_example.includes(lesson.tasks[0].answer),lesson.lesson_id+": introductory example reveals the first answer");}}}
+console.log("PASS: introductory examples do not copy the first question or its answer across all five levels.");
