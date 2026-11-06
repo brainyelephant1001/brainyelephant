@@ -2,13 +2,13 @@
 const crypto=require('node:crypto'),StripeClient=require('stripe');
 const EVENTS=['checkout.session.completed','checkout.session.async_payment_succeeded','checkout.session.async_payment_failed','charge.refunded','charge.dispute.created','radar.early_fraud_warning.created'];
 function createBilling({env=process.env,fetcher=fetch,stripe:injected,clock=()=>Date.now()}={}){
- const origin=env.ESOL_CUSTOMER_ORIGIN||'',key=env.STRIPE_RESTRICTED_KEY||'',priceId=env.ESOL_STRIPE_PRICE_ID||'',secret=env.STRIPE_WEBHOOK_SECRET||'',adminKey=env.SUPABASE_SERVICE_ROLE_KEY||'',dbUrl=env.SUPABASE_URL||'https://lovvxmlcpsbvmlxezora.supabase.co';
+ const origin=env.ESOL_CUSTOMER_ORIGIN||'',key=env.STRIPE_RESTRICTED_KEY||'',priceId=env.ESOL_STRIPE_PRICE_ID||'',secret=env.STRIPE_WEBHOOK_SECRET||'',adminKey=env.SUPABASE_SECRET_KEY||env.SUPABASE_SERVICE_ROLE_KEY||'',dbUrl=env.SUPABASE_URL||'https://lovvxmlcpsbvmlxezora.supabase.co';
  const enabled=env.ESOL_PUBLIC_CUSTOMERS==='true';
  const policyReady=[env.ESOL_TERMS_URL,env.ESOL_PRIVACY_URL].every(v=>{try{return new URL(v).protocol==='https:'}catch{return false}})&&/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(env.ESOL_SUPPORT_EMAIL||'');
  const configured=!!(enabled&&policyReady&&key&&priceId&&secret&&adminKey&&/^https:\/\/[^/]+$/.test(origin));
  const stripe=injected||(key?new StripeClient(key,{apiVersion:'2026-09-30.endive',maxNetworkRetries:2,timeout:15000}):null);
  const id=x=>typeof x==='string'?x:x?.id;
- async function db(table,method='GET',body){const r=await fetcher(dbUrl+'/rest/v1/'+table,{method,headers:{apikey:adminKey,Authorization:'Bearer '+adminKey,'Content-Type':'application/json',Prefer:'resolution=merge-duplicates,return=representation'},body:body===undefined?undefined:JSON.stringify(body),signal:AbortSignal.timeout(12000)});if(!r.ok)throw Error('Billing storage unavailable');return r.status===204?[]:r.json();}
+ async function db(table,method='GET',body){const r=await fetcher(dbUrl+'/rest/v1/'+table,{method,headers:{apikey:adminKey,...(adminKey.startsWith('sb_secret_')?{}:{Authorization:'Bearer '+adminKey}),'Content-Type':'application/json',Prefer:'resolution=merge-duplicates,return=representation'},body:body===undefined?undefined:JSON.stringify(body),signal:AbortSignal.timeout(12000)});if(!r.ok)throw Error('Billing storage unavailable');return r.status===204?[]:r.json();}
  const rows=(table,field,value)=>db(table+'?'+field+'=eq.'+encodeURIComponent(value));
  async function customer(user){let row=(await rows('be_esol_billing_customers','user_id',user.id))[0];if(row)return row;const c=await stripe.customers.create({email:user.email},{idempotencyKey:'be-esol-customer-'+user.id});row={user_id:user.id,customer_id:c.id};await db('be_esol_billing_customers?on_conflict=user_id','POST',row);return row;}
  async function checkPrice(){const p=await stripe.prices.retrieve(priceId);if(!p.active||p.currency!=='gbp'||p.unit_amount!==2999||p.recurring)throw Error('The configured price must be GBP 29.99 once');if(typeof p.livemode==='boolean'&&p.livemode!==/^[sr]k_live_/.test(key))throw Error('Payment environment mismatch');return p;}
