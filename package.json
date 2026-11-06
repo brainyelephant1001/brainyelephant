@@ -7,6 +7,7 @@
   },
   "scripts": {
     "start": "node private-esol/server.js",
-    "test:esol": "node tests/esol-course-validation.js"
+    "test:esol": "node tests/esol-course-validation.js && node tests/esol-functional.js && node tests/esol-server.js",
+    "dev": "node tools/esol/preview.js"
   }
 }

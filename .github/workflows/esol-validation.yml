@@ -1,7 +1,7 @@
 name: ESOL Course Validation
 on:
   push:
-    branches: [esol-integration-testing]
+    branches: [esol-integration-testing, esol-complete-working-course]
     paths: ['esol/**','tests/**','package.json','.github/workflows/esol-validation.yml']
   workflow_dispatch:
 jobs:
@@ -12,3 +12,7 @@ jobs:
       - uses: actions/setup-node@v4
         with: {node-version: '20'}
       - run: npm run test:esol
+      - name: Generate listening audio
+        run: python3 tools/esol/build_audio.py
+      - name: Validate generated audio
+        run: node tests/esol-audio.js

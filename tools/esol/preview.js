@@ -1,0 +1,4 @@
+// Local course preview only. Production uses the private tester server.
+const http=require('node:http'),fs=require('node:fs'),path=require('node:path');
+const root=path.resolve(__dirname,'../..');
+http.createServer((req,res)=>{const url=new URL(req.url,'http://localhost');let file=path.resolve(root,'.'+decodeURIComponent(url.pathname));if(!file.startsWith(root+path.sep)){res.writeHead(403).end();return;}if(!path.extname(file))file=path.join(file,'index.html');try{const content=fs.readFileSync(file);res.setHeader('Content-Type',({'.js':'text/javascript','.json':'application/json','.css':'text/css','.html':'text/html','.svg':'image/svg+xml','.png':'image/png','.mp3':'audio/mpeg'})[path.extname(file)]||'text/plain');res.end(content);}catch{res.writeHead(404).end('Not found');}}).listen(Number(process.env.PORT||process.argv[process.argv.indexOf('--port')+1]||3000),'0.0.0.0',()=>console.log('ESOL preview ready'));
