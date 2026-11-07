@@ -7,7 +7,7 @@
   },
   "scripts": {
     "start": "node private-esol/server.js",
-    "test:esol": "node tests/esol-course-validation.js && node tests/esol-functional.js && node tests/esol-content.js && node tests/esol-scenarios.js && node tests/esol-billing.js && node tests/esol-paid-exams.js && node tests/esol-server.js && node tests/esol-customer-server.js && node tests/esol-sandbox.js",
+    "test:esol": "node tests/esol-course-validation.js && node tests/esol-functional.js && node tests/esol-content.js && node tests/esol-scenarios.js && node tests/esol-offer.js && node tests/esol-billing.js && node tests/esol-paid-exams.js && node tests/esol-server.js && node tests/esol-customer-server.js && node tests/esol-sandbox.js",
     "dev": "node tools/esol/preview.js",
     "test:browser": "playwright test",
     "test:browser:quick": "playwright test flows.spec.js",
