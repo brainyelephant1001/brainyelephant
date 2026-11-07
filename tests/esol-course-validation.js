@@ -21,10 +21,13 @@ for(let level=1;level<=5;level++){
   if(!x.section)errors.push((x.lesson_id||'unknown')+': missing section');
   if(!x.learner_material)errors.push((x.lesson_id||'unknown')+': missing learner_material');
   if(x.stage>=3){
-   if(!String(x.question||'').trim())errors.push(x.lesson_id+': missing learner question');
-   if(tutor.test(String(x.question||'')))errors.push(x.lesson_id+': tutor/instruction wording in learner question');
+   if(!Array.isArray(x.tasks)||!x.tasks.length)errors.push(x.lesson_id+': missing learner tasks');
+   for(const t of x.tasks||[]){
+    if(!String(t.prompt||'').trim())errors.push(x.lesson_id+': missing learner question');
+    if(tutor.test(String(t.prompt||'')))errors.push(x.lesson_id+': tutor/instruction wording in learner question');
+    if(t.kind==='choice'&&!t.options.includes(t.answer))errors.push(x.lesson_id+': task answer not present in options');
+   }
    if(/\[[^\]]+\]/.test(String(x.learner_material||'')))errors.push(x.lesson_id+': placeholder text in learner material');
-   if(Array.isArray(x.choices)&&x.choices.length && !x.choices.includes(x.answer))errors.push(x.lesson_id+': answer not present in choices');
   }
  }
 }

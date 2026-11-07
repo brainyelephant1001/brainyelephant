@@ -1,7 +1,7 @@
 name: ESOL Course Validation
 on:
   push:
-    branches: [esol-integration-testing]
+    branches: [esol-integration-testing, esol-complete-working-course]
     paths: ['esol/**','tests/**','package.json','.github/workflows/esol-validation.yml']
   workflow_dispatch:
 jobs:
@@ -10,5 +10,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
-        with: {node-version: '20'}
+        with: {node-version: '22'}
+      - run: npm ci
       - run: npm run test:esol
+      - name: Install listening tools
+        run: sudo apt-get update && sudo apt-get install -y ffmpeg
+      - name: Generate listening audio
+        run: python3 tools/esol/build_audio.py
+      - name: Validate generated audio
+        run: node tests/esol-audio.js
+
