@@ -74,3 +74,10 @@ ESOL_CHECKOUT_OPEN defaults to false. Credential presence does not open checkout
 ## Isolated provider sandbox
 
 ESOL_STRIPE_SANDBOX_KEY must have an rk_test_ or sk_test_ prefix. It is never substituted for STRIPE_RESTRICTED_KEY. Owner-only /admin/sandbox uses the existing billing and final-test engine with REST/RPC calls rewritten exclusively to be_esol_sandbox_ records. Every sandbox table and function is service-role only. Startup creates a GBP 29.99 test product/Price and signed webhook once; only its signing secret is stored in the server-only sandbox config table, never in HTML or logs. /admin/sandbox/webhook verifies test signatures before fulfilment. Test refunds verify that the original Checkout Session is not live before requesting a refund. The provider confirmation, rehearsal and PDF download must be exercised before launch; mocked tests do not establish provider success.
+
+
+## Scheduled introductory pricing (7 November 2026 release)
+
+Set ESOL_OFFER_START=2026-11-07T00:00:00Z and ESOL_OFFER_END=2027-05-06T23:00:00Z (7 May midnight BST). Set ESOL_STRIPE_STANDARD_PRICE_ID to the GBP 49.99 one-off Price. ESOL_STRIPE_PRICE_ID remains the GBP 29.99 introductory Price. ESOL_CHECKOUT_OPEN=true only after launch checks pass. Missing or invalid dates keep sales closed. New checkouts switch automatically at the deadline; sessions opened earlier keep the quoted price for up to one hour. Both prices remain recognised for delayed signed payment events. No existing purchase is repriced. Run npm run test:esol, including tests/esol-offer.js, and the browser workflow.
+
+Seller policies are now served at /terms and /privacy. Live email confirmation/sign-in, password recovery and the isolated provider sandbox purchase/final-test/refund cycle have been verified. Public marketing pages are on main; the customer engine is on esol-complete-working-course. Update each separately without replacing the course landing page with the marketing landing page.
