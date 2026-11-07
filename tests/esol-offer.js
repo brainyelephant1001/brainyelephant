@@ -15,7 +15,7 @@ const assert=require('node:assert/strict'),{offer}=require('../private-esol/offe
  const stripe={prices:{retrieve:async id=>({active:true,currency:'gbp',unit_amount:id==='price_intro'?2999:4999,recurring:null})},customers:{create:async()=>({id:'cus_offer'})},checkout:{sessions:{create:async p=>{quoted=p;return {url:'https://checkout.stripe.com/c/test'}},listLineItems:async()=>({data:[{price:{id:linePrice},quantity:1}]})}},webhooks:{constructEvent:r=>JSON.parse(r)}};
  const billing=createBilling({env,stripe,clock:()=>now,fetcher:memory.fetcher});
  const user={id:'offer-user',email:'learner@example.invalid'};
- await billing.checkout(user);assert.equal(quoted.line_items[0].price,'price_intro');assert.equal(quoted.expires_at,Math.floor(now/1000)+1800);
+ await billing.checkout(user);assert.equal(quoted.line_items[0].price,'price_intro');assert.equal(quoted.expires_at,Math.floor(now/1000)+3600);
  now=Date.parse(end);await billing.checkout(user);assert.equal(quoted.line_items[0].price,'price_standard');
  const event=(id,amount)=>JSON.stringify({id,type:'checkout.session.completed',data:{object:{id,mode:'payment',payment_status:'paid',amount_total:amount,currency:'gbp',customer:'cus_offer',payment_intent:'pi_'+id,client_reference_id:user.id}}});
  // A valid pre-cutoff purchase can arrive after the cutoff without losing access.
