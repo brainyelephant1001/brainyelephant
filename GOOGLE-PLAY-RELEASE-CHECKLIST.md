@@ -15,7 +15,8 @@ Status: **SOURCE UPDATED FOR API 36; NOT READY FOR UPLOAD**. This branch is the 
 
 ## Engineering before release
 - [x] Source upgraded to Android compileSdk / targetSdk **36**; AGP updated to **8.10.1**. Build and runtime verification still pending.
-- [ ] Install the Android 16 SDK/build tools; compile and test after changing SDK levels. The standalone `build.sh` now requires an API 36 `android.jar`; legacy `setup-tools.sh` still fetches API 35 tools and must not be treated as a release setup.
+- [x] GitHub Actions Android build compiled both a debug APK and an **unsigned** release AAB successfully using Android SDK 36 and Gradle 8.11.1 (run 45940189770, 27 November 2026). Artifact retained on GitHub for 14 days; not a production-signed release.
+- [ ] The legacy standalone `setup-tools.sh` still fetches API 35, and must not be used to create an API 36 release; Android Studio/Gradle or CI builds are available.
 - [ ] Create production launcher icon/adaptive icon, distinct from temporary blue “LY”.
 - [x] GitHub Actions: 30 correct/incorrect question paths, offline resume, feedback, 320px/360px mobile browser layouts and no-network checks passed on 27 November 2026 (run 45939910857).
 - [ ] Physical Android device testing remains outstanding: lifecycle/restart, rotation, navigation and feedback on Samsung A14.
