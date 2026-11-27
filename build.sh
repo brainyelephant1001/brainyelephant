@@ -2,7 +2,11 @@
 set -euo pipefail
 cd "$(dirname "$0")"
 BT="${ANDROID_BUILD_TOOLS:-$PWD/tools/build-tools/android-15}"
-PLATFORM="${ANDROID_PLATFORM:-$PWD/tools/platform/android-35}"
+PLATFORM="${ANDROID_PLATFORM:-$PWD/tools/platform/android-36}"
+if [ ! -f "$PLATFORM/android.jar" ]; then
+ echo "Android API 36 platform not found at $PLATFORM. Install the Android 16 SDK or set ANDROID_PLATFORM to an API 36 platform directory." >&2
+ exit 1
+fi
 mkdir -p build/classes build/dex dist
 "$BT/aapt2" compile --dir app/src/main/res -o build/resources.zip
 "$BT/aapt2" link -o build/unsigned.apk -I "$PLATFORM/android.jar" --manifest app/src/main/AndroidManifest.xml -A app/src/main/assets build/resources.zip
