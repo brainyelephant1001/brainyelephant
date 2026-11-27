@@ -20,7 +20,7 @@ jobs:
       - name: Install isolated test dependency
         run: npm install --prefix tools/testdom --no-save --no-package-lock jsdom@26.1.0
       - name: Check inline JavaScript syntax
-        run: node -e 'const fs=require("fs"), h=fs.readFileSync("app/src/main/assets/index.html","utf8"), m=h.match(/<script>([\\s\\S]*?)<\\/script>/); if (!m) throw Error("Missing quiz script"); new Function(m[1]);'
+        run: node -e 'const h=require("fs").readFileSync("app/src/main/assets/index.html","utf8"); const s=h.indexOf("<script>"),e=h.indexOf("</script>",s); if(s<0||e<0) throw Error("Missing quiz script"); new Function(h.slice(s+8,e));'
       - name: Run quiz and progress-restoration tests
         run: node test-logic.cjs
       - name: Run extra quiz checks
