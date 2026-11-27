@@ -13,7 +13,7 @@
 <p><b>5. At what point did the challenge begin to feel difficult?</b></p><label class="choice"><input type="radio" name="hardAt" value="Q1-10">Q1–10</label><label class="choice"><input type="radio" name="hardAt" value="Q11-20">Q11–20</label><label class="choice"><input type="radio" name="hardAt" value="Q21-30">Q21–30</label><label class="choice"><input type="radio" name="hardAt" value="Never">It never felt difficult</label>
 <p><b>6. Would you use Light Years Learning again?</b></p><label class="choice"><input type="radio" name="again" value="Yes">Yes</label><label class="choice"><input type="radio" name="again" value="Maybe">Maybe</label><label class="choice"><input type="radio" name="again" value="No">No</label>
 <p><label for="note"><b>7. Anything we should improve? (optional)</b></label></p><textarea id="note" maxlength="700" placeholder="Optional comment..."></textarea><button id="sendFeedback">Save feedback on this device</button><button id="skipFeedback">Skip feedback</button><p id="feedbackStatus" role="status" aria-live="polite"></p></section>
-<section class="card hidden" id="thanks"><h2>Thank you for your participation</h2><p>Your challenge is complete. Any feedback you saved stays on this device.</p><button id="restart">Try again</button></section><section class="card" id="store"><h2>Enjoy learning without ads</h2><p class="muted">The free version contains a small test advertisement at the bottom. A one-time Google Play purchase removes advertising permanently. No subscription.</p><button id="removeAds" type="button" disabled>Remove ads — Google Play price</button><button id="restoreAds" type="button">Restore purchase</button><button id="adPrivacy" type="button">Advertising privacy choices</button><p class="muted" id="storeStatus" role="status" aria-live="polite">Checking Google Play purchase availability…</p></section></main>
+<section class="card hidden" id="thanks"><h2>Thank you for your participation</h2><p>Your challenge is complete. Any feedback you saved stays on this device.</p><button id="restart">Try again</button></section><section class="card" id="store"><h2>Enjoy learning without ads</h2><p class="muted">The free version contains a small test advertisement at the bottom. A one-time Google Play purchase removes advertising permanently. No subscription.</p><button id="removeAds" type="button">Remove ads — Google Play price</button><button id="restoreAds" type="button">Restore purchase</button><button id="adPrivacy" type="button">Advertising privacy choices</button><p class="muted" id="storeStatus" role="status" aria-live="polite">This is a test version. The ad-removal purchase is not available yet.</p></section></main>
 <script>
 // The quiz content remains offline and stored on-device. Android only: Google Play Billing and Google's test advertisement may use the network.
 window.LYLMonetization = {
@@ -24,14 +24,14 @@ window.LYLMonetization = {
    status.textContent = "Your ad-free purchase is active.";
   } else {
    purchase.textContent = formattedPrice ? "Remove ads permanently — " + formattedPrice : "Remove ads — price from Google Play";
-   purchase.disabled = !connected || !formattedPrice;
+   purchase.disabled = false;
    if (formattedPrice) status.textContent = "One-time purchase. Google Play handles payment.";
   }
  },
  status(message) { document.getElementById("storeStatus").textContent = message; }
 };
-document.getElementById("removeAds").onclick = () => { if(window.LYLStore) window.LYLStore.purchase(); };
-document.getElementById("restoreAds").onclick = () => { if(window.LYLStore) window.LYLStore.restore(); else window.LYLMonetization.status("Purchases are only available in the Android app."); };
+document.getElementById("removeAds").onclick = () => { window.LYLMonetization.status("Checking whether the ad-removal purchase is available…"); if(window.LYLStore) window.LYLStore.purchase(); else window.LYLMonetization.status("Purchase unavailable in this test version."); };
+document.getElementById("restoreAds").onclick = () => { window.LYLMonetization.status("Checking Google Play for a previous purchase…"); if(window.LYLStore) window.LYLStore.restore(); else window.LYLMonetization.status("Purchases are only available in the Android app."); };
 document.getElementById("adPrivacy").onclick = () => { if(window.LYLStore) window.LYLStore.privacy(); else window.LYLMonetization.status("Privacy choices are available in the Android app."); };
 if (!window.LYLStore) window.LYLMonetization.status("Ad removal is available only through Google Play in the Android app.");
 const VERSION="android-1.0";

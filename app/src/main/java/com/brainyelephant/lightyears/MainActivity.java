@@ -102,7 +102,7 @@ public class MainActivity extends Activity {
     private final class StoreBridge {
         @JavascriptInterface public void purchase() { runOnUiThread(() -> purchaseNoAds()); }
         @JavascriptInterface public void restore() { runOnUiThread(() -> {
-            if (billingReady) queryOwnership(); else sendStatus("Google Play is not connected. Try again when online.");
+            if (billingReady) queryOwnership(true); else sendStatus("Google Play is not connected. Purchases cannot be restored in this test installation.");
         }); }
         @JavascriptInterface public void privacy() { runOnUiThread(() -> {
             if (consent != null && consent.getPrivacyOptionsRequirementStatus() == ConsentInformation.PrivacyOptionsRequirementStatus.REQUIRED) {
@@ -150,7 +150,7 @@ public class MainActivity extends Activity {
                 }
                 billingReady = true;
                 notifyState();
-                queryOwnership();
+                queryOwnership(false);
                 queryProduct();
             }
             @Override public void onBillingServiceDisconnected() {
@@ -159,7 +159,7 @@ public class MainActivity extends Activity {
             }
         });
     }
-    private void queryOwnership() {
+    private void queryOwnership(boolean fromRestore) {
         QueryPurchasesParams params = QueryPurchasesParams.newBuilder().setProductType(BillingClient.ProductType.INAPP).build();
         billing.queryPurchasesAsync(params, (result, purchases) -> {
             if (result.getResponseCode() == BillingClient.BillingResponseCode.OK) {
@@ -174,7 +174,12 @@ public class MainActivity extends Activity {
                         }
                     }
                 }
-                if (!found) saveOwnership(false); // Also handles refunded/revoked products on refresh.
+                if (!found) {
+                    saveOwnership(false); // Also handles refunded/revoked products on refresh.
+                    if (fromRestore) sendStatus("No previous ad-removal purchase was found for this Google Play account.");
+                } else if (fromRestore) sendStatus("Your ad-free purchase has been restored.");
+            } else if (fromRestore) {
+                sendStatus("Google Play could not check your purchases. Please try again when connected.");
             }
             startConsent(); // Do not request an ad before checking prior purchase entitlement.
         });
