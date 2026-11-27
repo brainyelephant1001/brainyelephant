@@ -13,7 +13,10 @@ jobs:
         with:
           distribution: temurin
           java-version: '17'
-      - uses: android-actions/setup-android@v3
+      - name: Use Android SDK preinstalled on GitHub runner
+        run: |
+          echo "ANDROID_HOME=$ANDROID_HOME"
+          which sdkmanager || find "$ANDROID_HOME/cmdline-tools" -name sdkmanager
       - name: Install Android components
         run: |
           yes | sdkmanager --licenses > /dev/null || true
