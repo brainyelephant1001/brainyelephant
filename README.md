@@ -3,7 +3,7 @@
 First installable Android test edition of the existing Beta 3 challenge. It has not yet been assigned a Level 2 label. It retains all 30 questions, answers and explanations from `brainyelephant1001/johnsmythe-archive`, `beta-public/learn.html`, blob `cd5e1cda13559ea680246c1428b1ed4c45cac7af`.
 
 ## Use
-Install Light-Years-Learning-1.0.0.apk on the A14. The questions, scoring and explanations work offline. The blue LY launcher icon is a temporary text icon. No Render connection, account, ads, payments, analytics or Internet permission is included. Feedback is saved locally, never sent. Leaving/restarting the app can restart the challenge; rotation retains the open screen. This is a test build, not a Play Store release.
+Install Light-Years-Learning-1.0.0.apk on the A14. The questions, scoring and explanations work offline. The blue LY launcher icon is a temporary text icon. No Render connection, account, ads, payments, analytics or Internet permission is included. Feedback is saved locally, never sent. The updated source includes an offline checkpoint after each answered question. On reopening the app, learners can resume from the next unanswered question or start again; completed results are shown if the last question was answered. The updated build has not yet been tested on a device. Rotation retains the open screen. This is a test build, not a Play Store release.
 
 ## Verification
 The archived 1.0.0 test APK was built against Android API 35, requires Android 6 or later, and passes APK signature verification. Automated DOM checks completed all 30 correct and all 30 incorrect paths, checked explanations, Next, score totals, feedback validation, local feedback saving and skipping. No network calls occurred. A real Android device/emulator and visual layout were not available for testing. The bundled Playwright layout test is supplied but did not run in this environment because launching Chromium is restricted. Subject-content accuracy has not been independently re-reviewed.
@@ -16,3 +16,6 @@ The source is now configured for Android API 36 and Android Gradle Plugin 8.10.1
 To run logic tests: `npm install --prefix tools/testdom jsdom@26.1.0`, then `node test-logic.cjs`.
 
 This branch contains source and the test APK under downloads/. SDK downloads, caches and signing keys are excluded.
+
+## Offline progress (source update — pending regression run)
+The app stores a checkpoint in local WebView storage after each answer, with next question index, total score, subject counts and optional nickname. It does not send this checkpoint to a server. The learner can explicitly resume or discard it on the welcome screen. Once results are opened, the checkpoint is cleared. An additional regression scenario for 3 answered questions followed by an app restart is included in `test-logic.cjs`; its execution is still pending.
