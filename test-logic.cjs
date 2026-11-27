@@ -43,7 +43,7 @@ async function testResume(){
  assert.ok(!rd.getElementById('resumeArea').classList.contains('hidden'));
  rd.getElementById('resume').click();
  assert.match(rd.getElementById('progressText').textContent,/Question 4 of 30/);
- assert.equal(resumed.window.eval('score'),3);
+ assert.equal(JSON.parse(resumed.window.localStorage.getItem('lyl-progress-v1')).score,3);
  rd.querySelectorAll('.answer')[Q[3][4]].click();
  assert.equal(JSON.parse(resumed.window.localStorage.getItem('lyl-progress-v1')).score,4);
  assert.deepEqual(errors,[]);
