@@ -1,0 +1,53 @@
+name: Word Roots release AAB (unsigned)
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: android-actions/setup-android@v3
+      - name: Install Android components
+        run: |
+          yes | sdkmanager --licenses > /dev/null || true
+          sdkmanager "platform-tools" "platforms;android-35" "build-tools;35.0.1" "cmake;3.10.2.4988404" "ndk;28.1.13356709"
+      - name: Download Godot 4.7 and matching export templates
+        run: |
+          curl -fL --retry 3 -o godot.zip https://github.com/godotengine/godot/releases/download/4.7-stable/Godot_v4.7-stable_linux.x86_64.zip
+          unzip -q godot.zip -d /tmp/godot-bin
+          sudo install -m 755 /tmp/godot-bin/Godot_v4.7-stable_linux.x86_64 /usr/local/bin/godot
+          curl -fL --retry 3 -o templates.tpz https://github.com/godotengine/godot/releases/download/4.7-stable/Godot_v4.7-stable_export_templates.tpz
+          mkdir -p "$HOME/.local/share/godot/export_templates/4.7.stable"
+          unzip -p templates.tpz templates/android_source.zip > "$HOME/.local/share/godot/export_templates/4.7.stable/android_source.zip"
+          unzip -p templates.tpz templates/android_release.apk > "$HOME/.local/share/godot/export_templates/4.7.stable/android_release.apk"
+          unzip -p templates.tpz templates/android_debug.apk > "$HOME/.local/share/godot/export_templates/4.7.stable/android_debug.apk"
+          godot --headless --version
+      - name: Extract Word Roots prepared source
+        run: |
+          test -f Word-Roots-v6-Play-Release-Source.zip || { echo "Upload Word-Roots-v6-Play-Release-Source.zip to the repository root first."; exit 1; }
+          mkdir -p /tmp/word-roots
+          unzip -q Word-Roots-v6-Play-Release-Source.zip -d /tmp/word-roots
+          test -f /tmp/word-roots/project.godot
+          sed -i 's#package/signed=true#package/signed=false#' /tmp/word-roots/export_presets.cfg
+      - name: Install Android Gradle build template
+        run: |
+          godot --headless --path /tmp/word-roots --install-android-build-template --quit
+      - name: Import assets
+        run: godot --headless --path /tmp/word-roots --editor --import --quit
+      - name: Export non-debuggable Android App Bundle
+        run: |
+          mkdir -p /tmp/word-roots/build
+          godot --headless --path /tmp/word-roots --export-release "Android" /tmp/word-roots/build/WordRoots-v6-release-unsigned.aab
+          test -s /tmp/word-roots/build/WordRoots-v6-release-unsigned.aab
+      - uses: actions/upload-artifact@v4
+        with:
+          name: WordRoots-v6-release-unsigned
+          path: /tmp/word-roots/build/WordRoots-v6-release-unsigned.aab
+          if-no-files-found: error
