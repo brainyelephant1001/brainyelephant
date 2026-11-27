@@ -10,6 +10,8 @@ async function run(correct){
   assert.equal(d.getElementById('progressText').textContent,`Question ${i+1} of 30`);
   const q=Q[i];assert.ok(q[4]>=0&&q[4]<q[3].length);assert.ok(q[5].length>10);
   const buttons=d.querySelectorAll('.answer');buttons[correct?q[4]:(q[4]+1)%q[3].length].click();
+  assert.equal(d.getElementById('progressTrack').getAttribute('aria-valuenow'),String(i+1));
+  assert.equal(d.getElementById('next').textContent,i===Q.length-1?'See results':'Next question');
   assert.ok([...buttons].every(b=>b.disabled));
   assert.equal(d.getElementById('explanation').textContent,q[5]);
   assert.equal(d.querySelectorAll('.answer.correct').length,1);click('next');
