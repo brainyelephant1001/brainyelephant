@@ -1,0 +1,25 @@
+name: Light Years Learning checks
+
+on:
+  push:
+    branches: [light-years-learning-android]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  offline-quiz:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install isolated test dependency
+        run: npm install --prefix tools/testdom --no-save --no-package-lock jsdom@26.1.0
+      - name: Run quiz and progress-restoration tests
+        run: node test-logic.cjs
+      - name: Run extra quiz checks
+        run: node test.cjs
