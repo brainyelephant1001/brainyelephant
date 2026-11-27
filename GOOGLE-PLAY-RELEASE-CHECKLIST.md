@@ -1,6 +1,6 @@
 # Light Years Learning — Google Play Release Readiness
 
-Status: **NOT READY FOR UPLOAD**. This branch is the Android 1.0.0 **test build**, not a signed Google Play release. Keep existing code, signing material and backups intact.
+Status: **SOURCE UPDATED FOR API 36; NOT READY FOR UPLOAD**. This branch is the Android 1.0.0 **test build**, not a signed Google Play release. Keep existing code, signing material and backups intact.
 
 ## Confirmed from this branch (27 November 2026)
 - Application ID: `com.brainyelephant.lightyears`
@@ -14,8 +14,8 @@ Status: **NOT READY FOR UPLOAD**. This branch is the Android 1.0.0 **test build*
 - The GitHub branch is `light-years-learning-android`; the `main` branch is the Brainy Elephant website.
 
 ## Engineering before release
-- [ ] Upgrade Android targetSdk and compileSdk to **36** (Google Play new-app requirement as of November 2026).
-- [ ] Install the Android 16 SDK/build tools; compile and test after changing SDK levels.
+- [x] Source upgraded to Android compileSdk / targetSdk **36**; AGP updated to **8.10.1**. Build and runtime verification still pending.
+- [ ] Install the Android 16 SDK/build tools; compile and test after changing SDK levels. The standalone `build.sh` now requires an API 36 `android.jar`; legacy `setup-tools.sh` still fetches API 35 tools and must not be treated as a release setup.
 - [ ] Create production launcher icon/adaptive icon, distinct from temporary blue “LY”.
 - [ ] Test every assessment path, offline restart, rotation, navigation and local feedback on a physical Android device (Samsung A14 available).
 - [ ] Inspect displayed content for accuracy, reading level and accessibility.
