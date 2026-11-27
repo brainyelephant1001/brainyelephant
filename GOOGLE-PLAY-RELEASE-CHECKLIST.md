@@ -17,7 +17,8 @@ Status: **SOURCE UPDATED FOR API 36; NOT READY FOR UPLOAD**. This branch is the 
 - [x] Source upgraded to Android compileSdk / targetSdk **36**; AGP updated to **8.10.1**. Build and runtime verification still pending.
 - [ ] Install the Android 16 SDK/build tools; compile and test after changing SDK levels. The standalone `build.sh` now requires an API 36 `android.jar`; legacy `setup-tools.sh` still fetches API 35 tools and must not be treated as a release setup.
 - [ ] Create production launcher icon/adaptive icon, distinct from temporary blue “LY”.
-- [ ] Test every assessment path, offline restart, rotation, navigation and local feedback on a physical Android device (Samsung A14 available).
+- [x] GitHub Actions: 30 correct/incorrect question paths, offline resume, feedback, 320px/360px mobile browser layouts and no-network checks passed on 27 November 2026 (run 45939910857).
+- [ ] Physical Android device testing remains outstanding: lifecycle/restart, rotation, navigation and feedback on Samsung A14.
 - [ ] Inspect displayed content for accuracy, reading level and accessibility.
 - [ ] Define a release signing key kept **outside GitHub**, backed up securely; document key continuity for future updates.
 - [ ] Increment versionCode for release as appropriate; generate a **signed release AAB**, not just an APK.
