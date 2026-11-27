@@ -2,7 +2,7 @@ const { chromium } = require('playwright');
 const fs = require('fs');
 const assert = require('node:assert/strict');
 (async()=>{
-const browser = await chromium.launch({headless:true,executablePath:'/usr/bin/chromium',args:['--no-sandbox']});
+const browser = await chromium.launch({headless:true,args:['--no-sandbox']});
 const html = fs.readFileSync('app/src/main/assets/index.html','utf8');
 const errors=[];
 let requests=0;
@@ -22,7 +22,7 @@ for (const [width,height,mode] of [[360,640,'correct'],[320,568,'wrong']]) {
   await page.locator('.answer').nth(chosen).click();
   assert.equal(await page.locator('.answer:disabled').count(),q[3].length);
   assert.equal(await page.locator('#explanation').textContent(),q[5]);
-  await page.getByRole('button',{name:'Next question',exact:true}).click();
+  await page.getByRole('button',{name:n===29?'See results':'Next question',exact:true}).click();
  }
  assert.match(await page.locator('#scoreLine').textContent(),mode==='correct'?/30 \/ 30 correct/:/0 \/ 30 correct/);
  await page.getByRole('button',{name:'Continue to feedback'}).click();
@@ -36,7 +36,7 @@ for (const [width,height,mode] of [[360,640,'correct'],[320,568,'wrong']]) {
  await page.getByRole('button',{name:'Try again'}).click();
  assert.ok(await page.locator('#welcome').isVisible());
  assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth));
- if(mode==='correct') await page.screenshot({path:'dist/phone-preview.png'});
+ if(mode==='correct') {fs.mkdirSync('dist',{recursive:true});await page.screenshot({path:'dist/phone-preview.png'});}
  await context.close();
 }
 assert.deepEqual(errors,[]);assert.equal(requests,0);
