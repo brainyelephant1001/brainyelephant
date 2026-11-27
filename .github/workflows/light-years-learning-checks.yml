@@ -23,5 +23,9 @@ jobs:
         run: node -e 'const h=require("fs").readFileSync("app/src/main/assets/index.html","utf8"); const s=h.indexOf("<script>"),e=h.indexOf("</script>",s); if(s<0||e<0) throw Error("Missing quiz script"); new Function(h.slice(s+8,e));'
       - name: Run quiz and progress-restoration tests
         run: node test-logic.cjs
-      - name: Run extra quiz checks
+      - name: Install browser test dependencies
+        run: |
+          npm install --no-save --no-package-lock playwright@1.56.1
+          npx playwright install --with-deps chromium
+      - name: Run mobile browser and layout checks
         run: node test.cjs
