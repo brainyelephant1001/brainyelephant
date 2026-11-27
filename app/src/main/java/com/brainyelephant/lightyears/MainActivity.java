@@ -273,7 +273,7 @@ public class MainActivity extends Activity {
     @Override protected void onResume() {
         super.onResume();
         if (banner != null) banner.resume();
-        if (billingReady) queryOwnership();
+        if (billingReady) queryOwnership(false);
     }
     @Override protected void onPause() {
         if (banner != null) banner.pause();
