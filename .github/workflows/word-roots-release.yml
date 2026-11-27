@@ -41,7 +41,10 @@ jobs:
           sed -i 's#package/signed=true#package/signed=false#' /tmp/word-roots/export_presets.cfg
       - name: Install Android Gradle build template
         run: |
-          godot --headless --path /tmp/word-roots --install-android-build-template --quit
+          mkdir -p /tmp/word-roots/android/build
+          unzip -q "$HOME/.local/share/godot/export_templates/4.7.stable/android_source.zip" -d /tmp/word-roots/android/build
+          test -f /tmp/word-roots/android/build/build.gradle || { echo "Godot Android template did not extract as expected"; find /tmp/word-roots/android/build -maxdepth 3 -type f | head -25; exit 1; }
+          echo "Android template installed"
       - name: Import assets
         run: godot --headless --path /tmp/word-roots --editor --import --quit
       - name: Export non-debuggable Android App Bundle
