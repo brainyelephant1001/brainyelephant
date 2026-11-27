@@ -24,4 +24,29 @@ async function run(correct){
  }else {click('skipFeedback');await new Promise(r=>setImmediate(r));}
  assert.ok(!d.getElementById('thanks').classList.contains('hidden'));assert.deepEqual(errors,[]);dom.window.close();
 }
-(async()=>{await run(true);await run(false);console.log('PASS: 30 correct + 30 incorrect answers; explanations, Next, scoring, feedback validation, local save and skip; no network requests. Layout/device tests remain outstanding.');})().catch(e=>{console.error(e);process.exit(1)});
+async function testResume(){
+ const vc=new VirtualConsole(), errors=[];
+ vc.on('jsdomError',e=>{if(!e.message.includes('navigation'))errors.push(e.message)});
+ const options={url:'https://appassets.androidplatform.net/',runScripts:'dangerously',virtualConsole:vc,beforeParse(w){w.scrollTo=()=>{};w.Element.prototype.scrollIntoView=()=>{};w.fetch=()=>{throw Error('Unexpected network request')}}};
+ const first=new JSDOM(html,options),d=first.window.document;
+ const Q=first.window.eval('Q');
+ d.getElementById('anonymous').click();
+ for(let j=0;j<3;j++){d.querySelectorAll('.answer')[Q[j][4]].click();if(j<2)d.getElementById('next').click();}
+ const saved=first.window.localStorage.getItem('lyl-progress-v1');
+ const state=JSON.parse(saved);assert.equal(state.nextIndex,3);assert.equal(state.score,3);
+ first.window.close();
+ const resumed=new JSDOM(html,{...options,runScripts:'outside-only'});
+ resumed.window.localStorage.setItem('lyl-progress-v1',saved);
+ const script=html.match(/<script>([\s\S]*?)<\/script>/)[1];
+ resumed.window.eval(script);
+ const rd=resumed.window.document;
+ assert.ok(!rd.getElementById('resumeArea').classList.contains('hidden'));
+ rd.getElementById('resume').click();
+ assert.match(rd.getElementById('progressText').textContent,/Question 4 of 30/);
+ assert.equal(resumed.window.eval('score'),3);
+ rd.querySelectorAll('.answer')[Q[3][4]].click();
+ assert.equal(JSON.parse(resumed.window.localStorage.getItem('lyl-progress-v1')).score,4);
+ assert.deepEqual(errors,[]);
+ resumed.window.close();
+}
+(async()=>{await run(true);await run(false);await testResume();console.log('PASS: quiz flows, correct/incorrect feedback, 3-question offline save and resume; Android/device tests remain outstanding.');})().catch(e=>{console.error(e);process.exit(1)});
